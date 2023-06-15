@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { TokenContext } from "./context/Context";
 
-import SignIn from './components/SignIn'
+import Login from './components/Login'
 import Dashboard from "./Dashboard";
 import Register from "./components/Register";
 
@@ -45,7 +45,7 @@ export default function App() {
       <>
       <h1 className="text-xs text-gray-500">{mensaje}</h1>
       {/* <Register /> */}
-      <SignIn />
+      <Login />
       </>
       :
       <Dashboard />

@@ -6,7 +6,7 @@ import { TokenContext } from "../context/Context";
 
 
 
-export default function SignIn () {
+export default function Login () {
     
     const [user, setUser] = useState("")
     const [password, setPassword] = useState("")
@@ -15,7 +15,7 @@ export default function SignIn () {
 
 
     
-    const submitSignIn = async () => {
+    const submitLogin = async () => {
         
         const endpoint = '/token'
         const config = { headers: {'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' } }
@@ -35,7 +35,7 @@ export default function SignIn () {
 
     const handelSubmit = (e) => {
         e.preventDefault()
-        submitSignIn()
+        submitLogin()
     }
 
 

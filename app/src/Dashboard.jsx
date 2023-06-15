@@ -35,7 +35,7 @@ export default function Dashboard() {
   const {setToken} = useContext(TokenContext)
 
   
-  const handleSignOut = (e) => {
+  const handleLogout = (e) => {
     localStorage.removeItem("leadAppToken")
     setToken(null)
   }
@@ -120,17 +120,17 @@ export default function Dashboard() {
                                 )}
                               </Menu.Item>
                             ))}
-                              <Menu.Item key="Sign out">
+                              <Menu.Item key="Logout">
                               {({ active }) => (
                                 <a
                                   href=""
-                                  onClick={ handleSignOut }
+                                  onClick={ handleLogout }
                                   className={classNames(
                                     active ? 'bg-gray-100' : '',
                                     'block px-4 py-2 text-sm text-gray-700'
                                   )}
                                 >
-                                  Sign out
+                                  Logout
                                 </a>
                               )}
                             </Menu.Item>
@@ -199,10 +199,10 @@ export default function Dashboard() {
                       </Disclosure.Button>
                     ))}
                     <Disclosure.Button
-                      onClick={ handleSignOut }
+                      onClick={ handleLogout }
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                     >
-                    Sign out
+                    Logout
                     </Disclosure.Button>
                   </div>
                 </div>
