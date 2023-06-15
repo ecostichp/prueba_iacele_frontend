@@ -21,7 +21,7 @@ export default function Register () {
     
     const submitRegistration = async () => {
         
-        const endpoint = '/users'
+        const endpoint = '/newuser'
         const config = { headers: {'Accept': 'application/json', 'Content-Type': 'application/json' } }
         const datospost = { "user": user,
                             "name": name,
