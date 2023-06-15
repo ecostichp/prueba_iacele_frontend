@@ -1,0 +1,5 @@
+@import url("project.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
