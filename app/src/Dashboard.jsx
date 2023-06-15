@@ -130,7 +130,7 @@ export default function Dashboard() {
                                     'block px-4 py-2 text-sm text-gray-700'
                                   )}
                                 >
-                                  Logout
+                                  Cerrar sesión
                                 </a>
                               )}
                             </Menu.Item>
@@ -202,7 +202,7 @@ export default function Dashboard() {
                       onClick={ handleLogout }
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                     >
-                    Logout
+                    Cerrar sesión
                     </Disclosure.Button>
                   </div>
                 </div>
