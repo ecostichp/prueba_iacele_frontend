@@ -4,6 +4,8 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import { TokenContext, CurrentUserContext } from '../context/Context'
 
+import ToggleDarkMode from '../components/ToggleDarkMode'
+
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -80,14 +82,9 @@ export default function Dashboard() {
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
-
+                      <div className="absolute top-6">
+                        <ToggleDarkMode bg={6} />
+                      </div>
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
@@ -172,7 +169,7 @@ export default function Dashboard() {
                   ))}
                 </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
-                  <div className="flex items-center px-5">
+                  <div className="relative flex items-center px-5">
                     <div className="flex-shrink-0">
                       <img className="h-10 w-10 rounded-full" src={`./avatares/${user.avatar}.png`} alt="User profile picture" />
                     </div>
@@ -180,13 +177,9 @@ export default function Dashboard() {
                       <div className="text-base font-medium leading-none text-white">{user.name}</div>
                       <div className="text-sm font-medium leading-none mt-1 text-gray-400">{user.position}</div>
                     </div>
-                    <button
-                      type="button"
-                      className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    <div className="absolute right-4 top-2">
+                      <ToggleDarkMode bg={6} />
+                    </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
