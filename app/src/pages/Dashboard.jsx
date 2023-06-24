@@ -37,6 +37,7 @@ export default function Dashboard() {
   
   const handleLogout = (e) => {
     localStorage.removeItem("leadAppToken")
+    document.documentElement.classList.remove('dark')
     setToken(null)
   }
 
