@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import './app.css'
 
 import { TokenContext } from "./context/Context";
 
-import Login from './components/Login'
-import Dashboard from "./Dashboard";
-import Register from "./components/Register";
+import Login from './pages/Login'
+import Dashboard from "./pages/Dashboard";
+import Register from "./pages/Register";
 
 
 export default function App() {
@@ -43,7 +44,7 @@ export default function App() {
       {
       !token ?
       <>
-      <h1 className="text-xs text-gray-500">{mensaje}</h1>
+      <h1 className="text-xs text-gray-500 dark:text-gray-400">{mensaje}</h1>
       {/* <Register /> */}
       <Login />
       </>

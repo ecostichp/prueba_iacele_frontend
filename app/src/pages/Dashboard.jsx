@@ -2,7 +2,7 @@ import { Fragment, useContext } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import { TokenContext, CurrentUserContext } from './context/Context'
+import { TokenContext, CurrentUserContext } from '../context/Context'
 
 
 const navigation = [
@@ -211,14 +211,14 @@ export default function Dashboard() {
           )}
         </Disclosure>
 
-        <header className="bg-white shadow">
+        <header className="bg-white dark:bg-neutral-900 shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200">Dashboard</h1>
           </div>
         </header>
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold tracking-tight text-yellow-700">Hola {user.name}</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-yellow-700 dark:text-yellow-600">Hola {user.name}</h1>
           </div>
         </main>
       </div>

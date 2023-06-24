@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import axios from "axios";
 
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage";
 import { TokenContext } from "../context/Context";
 
 
