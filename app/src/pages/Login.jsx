@@ -121,7 +121,7 @@ export default function Login () {
             </form>
 
             <div className="mt-4">
-                <ToggleDarkMode bg={3} />
+                <ToggleDarkMode bg={"bg-gray-300"} />
             </div>
 
 

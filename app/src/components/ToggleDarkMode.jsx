@@ -6,7 +6,7 @@ import { ThemeContext } from "../context/Context";
 
 
 export default function ToggleDarkMode( {bg} ) {
-
+    
     const {themeApp, setThemeApp} = useContext(ThemeContext)
 
     const isChecked = themeApp === 'dark'
@@ -23,7 +23,7 @@ export default function ToggleDarkMode( {bg} ) {
         }
       }
 
-    return (
+      return (
         <div className="relative">
             <label className="absolute inline-flex items-center cursor-pointer end-0">
                 <input type="checkbox"
@@ -31,7 +31,7 @@ export default function ToggleDarkMode( {bg} ) {
                     checked={isChecked}
                     className="sr-only peer"
                 />
-                <div className={`w-9 h-5 rounded-full peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-700 dark:bg-gray-700 dark:border-gray-600 bg-gray-${bg}00 peer-checked:bg-blue-900`}>
+                <div className={"w-9 h-5 rounded-full peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-700 dark:bg-gray-700 dark:border-gray-600 bg-gray-600 peer-checked:bg-blue-900 "+bg}>
                 </div>
                 <span className="w-4 h-4 rounded-full peer-checked:translate-x-full peer-checked:border-white absolute top-[2px] left-[2px] bg-white border-gray-300 border transition-all justify-center flex items-center">
                     {isChecked ? 
