@@ -129,9 +129,11 @@ export default function Login () {
                     />
                     <div className="w-9 h-5 rounded-full peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-700 dark:bg-gray-700 dark:border-gray-600 bg-gray-200 peer-checked:bg-blue-900">
                     </div>
-                    <span className="w-4 h-4 rounded-full peer-checked:translate-x-full peer-checked:border-white absolute top-[2px] left-[2px] bg-white border-gray-300 border transition-all flex justify-center items-center">
-                        {/* <SunIcon className="h-3 w-3 text-blue-600 dark:text-blue-500" /> */}
-                        <MoonIcon className="h-3 w-3 text-blue-600 dark:text-blue-500"/>
+                    <span className="hidden dark:flex w-4 h-4 rounded-full peer-checked:translate-x-full peer-checked:border-white absolute top-[2px] left-[2px] bg-white border-gray-300 border transition-all justify-center items-center">
+                        <MoonIcon className="h-3 w-3 text-neutral-700"/>
+                    </span>
+                    <span className="dark:hidden flex w-4 h-4 rounded-full peer-checked:translate-x-full peer-checked:border-white absolute top-[2px] left-[2px] bg-white border-gray-300 border transition-all  justify-center items-center">
+                        <SunIcon className="h-3 w-3 text-yellow-500"/>
                     </span>
                     
                 </label>
