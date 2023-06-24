@@ -22,7 +22,7 @@ body {
     @apply dark:text-gray-300;
 
     @apply peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90;
+    @apply peer-placeholder-shown:-translate-y-1/2 peer-focus:-translate-y-7 left-1;
     @apply peer-focus:text-blue-600;
     @apply peer-focus:dark:text-blue-500;
-    @apply peer-placeholder-shown:-translate-y-1/2 peer-focus:-translate-y-7 left-1;
 }

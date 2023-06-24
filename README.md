@@ -43,17 +43,16 @@ Ya dentro de la carpeta, donde está el archivo "package.json" corre el comando 
 
 ```
 yarn
-yarn add -D moment axios
-```
-
-### 4. Instala TailwindCSS.
-4.1: Para TaiwindCSS:
-```
-yarn add -D tailwindcss postcss autoprefixer @headlessui/react @heroicons/react
+yarn add axios react-router-dom localforage match-sorter sort-by
+yarn add -D tailwindcss postcss autoprefixer
 yarn tailwindcss init -p
+yarn add @headlessui/react @heroicons/react
 ```
 
-4.2: Agrega este código al archivo "tailwind.config.js", en el apartado de 'content':
+### 4. Configura TailWindCSS y TailWindUI.
+4.1: Para TaiwindCSS:
+
+4.1.1: Agrega este código al archivo "tailwind.config.js", en el apartado de 'content':
 ```
 "./index.html",
 "./src/**/*.{js,ts,jsx,tsx}",
@@ -76,7 +75,7 @@ export default {
   "más código..."
 ```
 
-4.3: Por último, agrega el código siguiente al archivo "./src/index.css":
+4.1.2: Por último, agrega el código siguiente al archivo "./src/index.css":
 ```
 @tailwind base;
 @tailwind components;
@@ -95,9 +94,9 @@ si prefieres correr la aplición en un puerto específico (ej: 3010):
 ```
 yarn dev -p 3010
 ```
-si prefieres correr la aplición en un host diferente al local (ej: 192.168.1.72):
+si prefieres correr la aplición exponiendola en tu red local:
 ```
-yarn dev -H 192.168.1.72
+yarn dev --host
 ```
 
 
