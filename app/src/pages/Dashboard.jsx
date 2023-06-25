@@ -83,7 +83,7 @@ export default function Dashboard() {
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
                       <div className="absolute top-6">
-                        <ToggleDarkMode bg={"6"} />
+                        <ToggleDarkMode />
                       </div>
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
@@ -178,7 +178,7 @@ export default function Dashboard() {
                       <div className="text-sm font-medium leading-none mt-1 text-gray-400">{user.position}</div>
                     </div>
                     <div className="absolute right-4 top-2">
-                      <ToggleDarkMode bg={"6"} />
+                      <ToggleDarkMode />
                     </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
