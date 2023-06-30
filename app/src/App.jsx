@@ -5,7 +5,6 @@ import'./dataBases/dbNames'
 import './app.css'
 
 import { TokenContext, ThemeContext } from "./context/Context";
-import { localForageGet } from './hooks/localForageCRUD'
 import conexionServidor from './hooks/conexionServidor'
 
 import Login from './pages/Login'
@@ -24,20 +23,19 @@ export default function App() {
   themeApp === 'dark' && document.documentElement.classList.add(themeApp)
   
   
-  const [mensaje, setMensaje] = useState("")
+  const [mensaje, setMensaje] = useState("Resolviendo conexión con el servidor")
   useEffect(
-    () => { conexionServidor(setMensaje)}, []
+    () => { conexionServidor(setMensaje) }, []
   )
   
   
 
-  const [wep, setWep] = useState(null )
+  const [wep, setWep] = useState("Resolviendo conexión")
   const [error, setError] = useState(null)
   useEffect(
-    () => { localForageGet('wep', setWep, setError) },[]
+    () => { localforage.getItem('wep').then(setWep).catch(setError) },[]
   )
   
-  console.log(wep, 'wep')
   
 
   return (

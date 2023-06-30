@@ -1,7 +1,5 @@
 import localforage from "localforage";
 
-localStorage.setItem('theme','light')
-
 
 
 let wep = {

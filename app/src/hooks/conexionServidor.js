@@ -7,12 +7,9 @@ export default async function conexionServidor(setMensaje) {
     
     try {
       const response = await axios.get(import.meta.env.VITE_API_HOST + endpoint)
-      const data = response.data
-      setMensaje(data.message)
-      return
+      setMensaje(response.data.message)
     }
     catch(error) {
       setMensaje(error.name)
-      return
     }
 }
