@@ -1,12 +1,16 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 import { TokenContext } from "../context/Context";
 
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
+import Logo2021 from '../images/brand/Logo2021.png'
+
 import ErrorMessage from "../components/ErrorMessage";
 import ToggleDarkMode from "../components/ToggleDarkMode";
+
+import conexionServidor from '../hooks/conexionServidor'
 
 
 
@@ -21,6 +25,11 @@ export default function Login () {
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => setIsVisible(!isVisible);
+
+    const [mensaje, setMensaje] = useState("Resolviendo conexión con el servidor")
+    useEffect(
+      () => { conexionServidor(setMensaje) }, []
+    )
 
 
     const submitLogin = async () => {
@@ -49,12 +58,14 @@ export default function Login () {
 
 
     return (
+        <>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{mensaje}</p>
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <div className="dark:bg-neutral-700 rounded-lg p-4">
                 <img
                     className="mx-auto max-h-24 w-auto"
-                    src="Logo2021.png"
+                    src={Logo2021}
                     alt="La Casa Del Carpintero"
                 />
             </div>
@@ -71,22 +82,24 @@ export default function Login () {
                     <input
                         required
                         type="text" 
-                        id="floating_o" 
+                        id="loginUser"
+                        name="loginUser"
                         onChange={(e) => setUser(e.target.value.toLocaleLowerCase())}
                         className="peer input_login"
                         placeholder=" " />
                     <label 
-                        htmlFor="floating_o"
+                        htmlFor="loginUser"
                         className="label_input_login">
                             Usuario
-                        </label>
+                    </label>
                 </div>
 
                 <div className="relative">
                     <input
                     required
                     type={isVisible ? "text" : "password"}
-                    id="floating_outlined"
+                    id="loginPassword"
+                    name="loginPassword"
                     onChange={(e) => setPassword(e.target.value)}
                     className="peer input_login"
                     placeholder=" " />
@@ -100,7 +113,7 @@ export default function Login () {
                         </button>
                     </div>
                     <label 
-                        htmlFor="floating_outlined"
+                        htmlFor="loginPassword"
                         className="label_input_login">
                         Constraseña
                     </label>
@@ -128,5 +141,6 @@ export default function Login () {
             </div>
 
         </div>
+        </>
     )
 }

@@ -32,7 +32,6 @@ export default function AuthProvider ( {children} ) {
             }
             catch(error) {
                 setToken(null)
-                console.log(error.response.data.detail)
             }
             
     };

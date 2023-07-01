@@ -1,16 +1,14 @@
-import { useState, useEffect, useContext } from "react";
-import localforage from "localforage";
+import { useState, useContext } from "react";
+
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router"
+
 import'./dataBases/dbNames'
 
 import './app.css'
 
 import { TokenContext, ThemeContext } from "./context/Context";
-import conexionServidor from './hooks/conexionServidor'
-
-import Login from './pages/Login'
-import Dashboard from "./pages/Dashboard";
-import Register from "./pages/Register";
-
+import Login from "./pages/Login";
 
 
 
@@ -23,19 +21,7 @@ export default function App() {
   themeApp === 'dark' && document.documentElement.classList.add(themeApp)
   
   
-  const [mensaje, setMensaje] = useState("Resolviendo conexión con el servidor")
-  useEffect(
-    () => { conexionServidor(setMensaje) }, []
-  )
-  
-  
-
-  const [wep, setWep] = useState("Resolviendo conexión")
-  const [error, setError] = useState(null)
-  useEffect(
-    () => { localforage.getItem('wep').then(setWep).catch(setError) },[]
-  )
-  
+ 
   
 
   return (
@@ -43,13 +29,10 @@ export default function App() {
         {
         !token ?
         <>
-        <h1 className="text-xs text-gray-500 dark:text-gray-400">{mensaje}</h1>
-        <h1 className="text-xs text-gray-500 dark:text-gray-400">{wep && wep.status}</h1>
-        {/* <Register /> */}
         <Login />
         </>
         :
-        <Dashboard />
+        <RouterProvider router={router}/>
         }
     </ThemeContext.Provider>
   )
