@@ -5,7 +5,7 @@ import { TokenContext } from "../context/Context";
 
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-import Logo2021 from '../images/brand/Logo2021.png'
+import Logo2021 from './brand/Logo2021.png'
 
 import ErrorMessage from "../components/ErrorMessage";
 import ToggleDarkMode from "../components/ToggleDarkMode";

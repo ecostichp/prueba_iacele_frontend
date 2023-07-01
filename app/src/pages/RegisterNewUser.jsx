@@ -3,7 +3,7 @@ import axios from "axios";
 
 import ErrorMessage from "../components/ErrorMessage";
 import { TokenContext } from "../context/Context";
-import Logo2021 from '../images/brand/Logo2021.png'
+import Logo2021 from './brand/Logo2021.png'
 
 export default function Register () {
     

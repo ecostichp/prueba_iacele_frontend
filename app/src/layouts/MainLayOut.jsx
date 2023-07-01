@@ -2,7 +2,7 @@ import { Fragment, useContext } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import LogoNegativo2021 from '../images/brand/LogoNegativo2021.png'
+import LogoNegativo2021 from './brand/LogoNegativo2021.png'
 
 import { TokenContext, CurrentUserContext } from '../context/Context'
 
@@ -96,7 +96,7 @@ export default function MainLayOut() {
                         <div>
                           <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
-                            <img className="h-8 w-8 rounded-full" src={`../src/images/avatares/${user.avatar}.png`} alt="User profile picture" />
+                            <img className="h-8 w-8 rounded-full" src={`./avatares/${user.avatar}.png`} alt="User profile picture" />
                           </Menu.Button>
                         </div>
                         <Transition
@@ -177,7 +177,7 @@ export default function MainLayOut() {
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="relative flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={`../src/images/avatares/${user.avatar}.png`} alt="User profile picture" />
+                      <img className="h-10 w-10 rounded-full" src={`./${user.avatar}.png`} alt="User profile picture" />
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">{user.name}</div>
