@@ -1,8 +1,6 @@
 import { Fragment, useContext } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
-import LogoNegativo2021 from './brand/LogoNegativo2021.png'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import { TokenContext, CurrentUserContext } from '../context/Context'
 
@@ -61,7 +59,7 @@ export default function MainLayOut() {
                       <Link to='/'>
                         <img
                           className="max-h-8 w-auto"
-                          src={LogoNegativo2021}
+                          src='./brand/LogoNegativo2021.png'
                           alt="Your Company"
                         />
                       </Link>

@@ -5,8 +5,6 @@ import { TokenContext } from "../context/Context";
 
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-import Logo2021 from './brand/Logo2021.png'
-
 import ErrorMessage from "../components/ErrorMessage";
 import ToggleDarkMode from "../components/ToggleDarkMode";
 
@@ -65,7 +63,7 @@ export default function Login () {
             <div className="dark:bg-neutral-700 rounded-lg p-4">
                 <img
                     className="mx-auto max-h-24 w-auto"
-                    src={Logo2021}
+                    src='./brand/Logo2021.png'
                     alt="La Casa Del Carpintero"
                 />
             </div>

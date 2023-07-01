@@ -3,7 +3,6 @@ import axios from "axios";
 
 import ErrorMessage from "../components/ErrorMessage";
 import { TokenContext } from "../context/Context";
-import Logo2021 from './brand/Logo2021.png'
 
 export default function Register () {
     
@@ -59,7 +58,7 @@ export default function Register () {
             <div className="dark:bg-neutral-700 rounded-lg p-4">
                 <img
                     className="mx-auto max-h-24 w-auto"
-                    src={Logo2021}
+                    src='./brand/Logo2021.png'
                     alt="La Casa Del Carpintero"
                 />
             </div>
