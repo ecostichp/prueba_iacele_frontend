@@ -175,7 +175,7 @@ export default function MainLayOut() {
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="relative flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={`./${user.avatar}.png`} alt="User profile picture" />
+                      <img className="h-10 w-10 rounded-full" src={`./avatares/${user.avatar}.png`} alt="User profile picture" />
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">{user.name}</div>
