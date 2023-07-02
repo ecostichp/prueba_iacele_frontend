@@ -83,6 +83,7 @@ export default function Login () {
                         id="loginUser"
                         name="loginUser"
                         onChange={(e) => setUser(e.target.value.toLocaleLowerCase())}
+                        value={user}
                         className="peer input_login"
                         placeholder=" " />
                     <label 
@@ -99,6 +100,7 @@ export default function Login () {
                     id="loginPassword"
                     name="loginPassword"
                     onChange={(e) => setPassword(e.target.value)}
+                    value={password}
                     className="peer input_login"
                     placeholder=" " />
                     <div className="absolute inset-y-0 right-2 flex items-center">

@@ -6,7 +6,7 @@ import { TokenContext, CurrentUserContext } from '../context/Context'
 
 import ToggleDarkMode from '../components/ToggleDarkMode'
 
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 
 const navigation = [
@@ -39,7 +39,9 @@ export default function MainLayOut() {
   const {setToken} = useContext(TokenContext)
 
   
+  const navigate = useNavigate()
   const handleLogout = (e) => {
+    navigate("/")
     localStorage.removeItem("leadAppToken")
     document.documentElement.classList.remove('dark')
     setToken(null)
