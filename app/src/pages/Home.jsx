@@ -15,6 +15,7 @@ export default function Home() {
     <main>
       <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-bold tracking-tight text-yellow-700 dark:text-yellow-600">Hola {user.name}</h1>
+        <p className="text-gray-700 dark:text-gray-400 mt-2">Pronto vas a tener la mejor App de ventas...</p>
       </div>
     </main>
   </>

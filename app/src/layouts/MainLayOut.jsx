@@ -6,16 +6,13 @@ import { TokenContext, CurrentUserContext } from '../context/Context'
 
 import ToggleDarkMode from '../components/ToggleDarkMode'
 
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
 
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Usuarios', href: '#', current: false },
-  { name: 'CxP', href: '#', current: false },
-  { name: 'MP', href: '#', current: false },
-  { name: 'MOC', href: '#', current: false },
-  { name: 'BI', href: '#', current: false },
+  { name: 'Dashboard', href: '/dashboard', current: false },
+  { name: 'Usuarios', href: '/register', current: false },
+
 ]
 
 const userNavigation = [
@@ -69,19 +66,22 @@ export default function MainLayOut() {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) => (
-                          <a
+                          <NavLink
                             key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
+                            to={item.href}
+                            className={ (a) => {
+                              let classTxt = classNames(
+                              a.isActive
                                 ? 'bg-gray-900 text-white'
                                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium'
-                            )}
+                              )
+                              return classTxt
+                            }}
                             aria-current={item.current ? 'page' : undefined}
                           >
                             {item.name}
-                          </a>
+                          </NavLink>
                         ))}
                       </div>
                     </div>
@@ -160,18 +160,22 @@ export default function MainLayOut() {
               <Disclosure.Panel className="md:hidden">
                 <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                   {navigation.map((item) => (
-                    <Disclosure.Button
+                    <NavLink
                       key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                        'block rounded-md px-3 py-2 text-base font-medium'
-                      )}
+                      to={item.href}
+                      className={(a) => {
+                        let classTxt = classNames(
+                        a.isActive
+                          ? 'bg-gray-900 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          'block rounded-md px-3 py-2 text-base font-medium'
+                        )
+                        return classTxt
+                      }}
                       aria-current={item.current ? 'page' : undefined}
                     >
                       {item.name}
-                    </Disclosure.Button>
+                    </NavLink>
                   ))}
                 </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
