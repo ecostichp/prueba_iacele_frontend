@@ -116,7 +116,7 @@ export default function MainLayOut() {
                                     href={item.href}
                                     className={classNames(
                                       active ? 'bg-gray-100' : '',
-                                      'block px-4 py-2 text-sm text-gray-700'
+                                      'block px-4 py-2 text-sm text-gray-400'
                                     )}
                                   >
                                     {item.name}
@@ -197,7 +197,7 @@ export default function MainLayOut() {
                         key={item.name}
                         as="a"
                         href={item.href}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
                       </Disclosure.Button>
