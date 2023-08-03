@@ -16,7 +16,9 @@ export default function Home() {
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-bold tracking-tight text-yellow-700 dark:text-yellow-600">Hola {user.name}</h1>
         <p className="text-gray-700 dark:text-gray-400 mt-2">Pronto vas a tener la mejor App de ventas...</p>
-        <iframe title="Report Section" width="1024" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiOTNlNDgwNjItZGI4OS00NDkwLWE1YTAtMjYyOTMzYmJlOWNmIiwidCI6IjNjNGJjZjZhLTQzOTQtNDI1OC05YjVkLWZlMmZkMTg4MGFjYiIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
+
+        <iframe title="Report Section" width="1024" height="612" src="https://app.powerbi.com/view?r=eyJrIjoiMTM1NjkyMzMtM2U5My00YWFkLWE5OGMtZmYxMmI2ZWFlMWJmIiwidCI6IjNjNGJjZjZhLTQzOTQtNDI1OC05YjVkLWZlMmZkMTg4MGFjYiIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
+      
       </div>
     </main>
   </>
