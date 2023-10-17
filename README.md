@@ -19,8 +19,11 @@ La estructura de la aplicación queda de la siguiente manera:
   1.1.- Hosting: Google Cloud Run (con Docker)
   1.2.- ORM: SQLAlchemy
 
-2.- Database Motor SQLite
-  2.1.- Hosting: dentro del contenedor Docker del backend
+2A.- Database Motor para Producción: PostgreSQL
+  2A.1.- Hosting: Google Cloud SQL
+
+2B.- Database Motor para Testing: SQLite
+  2B.1.- Hosting: Local
 
 
 3.- Frontend ReactJS
