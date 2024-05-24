@@ -5,10 +5,10 @@ import { CurrentUserContext } from '../context/Context'
 import ErrorMessage from "../components/ErrorMessage";
 
 
-export default function Register () {
-    
+export default function Register() {
+
     const current_user = useContext(CurrentUserContext)
-    
+
     const [user, setUser] = useState("")
     const [name, setName] = useState("")
     const [position, setPosition] = useState("")
@@ -17,25 +17,27 @@ export default function Register () {
     const [confirmationPassword, setConfirmationPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
-    
+
     const submitRegistration = async () => {
-        
-        const endpoint = '/newuser'
-        const config = { headers: {'Accept': 'application/json', 'Content-Type': 'application/json' } }
-        const datospost = { "user": user,
-                            "name": name,
-                            "position": position,
-                            "avatar": avatar,
-                            "password": password}
+
+        const endpoint = 'authentication/newuser'
+        const config = { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } }
+        const datospost = {
+            "user": user,
+            "name": name,
+            "position": position,
+            "avatar": avatar,
+            "password": password
+        }
 
         try {
             const response = await axios.post(import.meta.env.VITE_API_HOST + endpoint, datospost, config)
         }
-        catch(error) {
-            setErrorMessage (error.response.data.detail)
+        catch (error) {
+            setErrorMessage(error.response.data.detail)
         }
     }
-    
+
     const resetForm = () => {
         setUser("")
         setName("")
@@ -50,9 +52,9 @@ export default function Register () {
         e.preventDefault()
         if (password === confirmationPassword && password.length > 5) {
             submitRegistration()
-            resetForm()            
+            resetForm()
         } else {
-            setErrorMessage (
+            setErrorMessage(
                 "Verifica que las contraseñas coincidan y que son mayores a 5 caracteres"
             )
         }
@@ -73,120 +75,120 @@ export default function Register () {
         return (
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <div className="dark:bg-neutral-700 rounded-lg p-4">
-                    <img
-                        className="mx-auto max-h-24 w-auto"
-                        src='./brand/Logo2021.png'
-                        alt="La Casa Del Carpintero"
-                    />
-                </div>
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-50">
-                    Registro para nuevo usuario
-                </h2>
+                    <div className="dark:bg-neutral-700 rounded-lg p-4">
+                        <img
+                            className="mx-auto max-h-24 w-auto"
+                            src='./brand/Logo2021.png'
+                            alt="La Casa Del Carpintero"
+                        />
+                    </div>
+                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-50">
+                        Registro para nuevo usuario
+                    </h2>
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" onSubmit={ handelSubmit }>
-                        
+                    <form className="space-y-6" onSubmit={handelSubmit}>
+
                         <div className="relative">
                             <input
                                 required
-                                type="text" 
-                                id="registerUser" 
-                                name="registerUser" 
+                                type="text"
+                                id="registerUser"
+                                name="registerUser"
                                 onChange={(e) => setUser(e.target.value.toLocaleLowerCase())}
                                 value={user}
                                 className="peer input_login"
                                 placeholder=" " />
-                            <label 
+                            <label
                                 htmlFor="registerUser"
                                 className="label_input_login">
-                                    Usuario
+                                Usuario
                             </label>
                         </div>
 
                         <div className="relative">
                             <input
                                 required
-                                type="text" 
-                                id="registerUserName" 
-                                name="registerUserName" 
+                                type="text"
+                                id="registerUserName"
+                                name="registerUserName"
                                 onChange={(e) => setName(e.target.value)}
                                 value={name}
                                 className="peer input_login"
                                 placeholder=" " />
-                            <label 
+                            <label
                                 htmlFor="registerUserName"
                                 className="label_input_login">
-                                    Nombre completo
+                                Nombre completo
                             </label>
                         </div>
 
                         <div className="relative">
                             <input
                                 required
-                                type="text" 
-                                id="registerUserJobPosition" 
-                                name="registerUserJobPosition" 
+                                type="text"
+                                id="registerUserJobPosition"
+                                name="registerUserJobPosition"
                                 onChange={(e) => setPosition(e.target.value)}
                                 value={position}
                                 className="peer input_login"
                                 placeholder=" " />
-                            <label 
+                            <label
                                 htmlFor="registerUserJobPosition"
                                 className="label_input_login">
-                                    Puesto de trabajo
+                                Puesto de trabajo
                             </label>
                         </div>
 
                         <div className="relative">
                             <input
                                 required
-                                type="text" 
-                                id="registerUserAvatar" 
-                                name="registerUserAvatar" 
+                                type="text"
+                                id="registerUserAvatar"
+                                name="registerUserAvatar"
                                 onChange={(e) => setAvatar(e.target.value)}
                                 value={avatar}
                                 className="peer input_login"
                                 placeholder=" " />
-                            <label 
+                            <label
                                 htmlFor="registerUserAvatar"
                                 className="label_input_login">
-                                    Foto de perfil
+                                Foto de perfil
                             </label>
                         </div>
 
                         <div className="relative">
                             <input
                                 required
-                                type="password" 
-                                id="registerUserPassword" 
-                                name="registerUserPassword" 
+                                type="password"
+                                id="registerUserPassword"
+                                name="registerUserPassword"
                                 onChange={(e) => setPassword(e.target.value)}
                                 value={password}
                                 className="peer input_login"
                                 placeholder=" " />
-                            <label 
+                            <label
                                 htmlFor="registerUserPassword"
                                 className="label_input_login">
-                                    Contraseña
+                                Contraseña
                             </label>
                         </div>
 
                         <div className="relative">
                             <input
                                 required
-                                type="password" 
-                                id="registerUserConfirmationPassword" 
-                                name="registerUserConfirmationPassword" 
+                                type="password"
+                                id="registerUserConfirmationPassword"
+                                name="registerUserConfirmationPassword"
                                 onChange={(e) => setConfirmationPassword(e.target.value)}
                                 value={confirmationPassword}
                                 className="peer input_login"
                                 placeholder=" " />
-                            <label 
+                            <label
                                 htmlFor="registerUserConfirmationPassword"
                                 className="label_input_login">
-                                    Confirma la contraseña
+                                Confirma la contraseña
                             </label>
                         </div>
 

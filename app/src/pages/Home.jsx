@@ -4,23 +4,20 @@ import { CurrentUserContext } from '../context/Context'
 export default function Home() {
 
   const user = useContext(CurrentUserContext)
-  
-  return (
-  <>
-    <header className="bg-white dark:bg-neutral-900 shadow">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200">Home</h1>
-      </div>
-    </header>
-    <main>
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold tracking-tight text-yellow-700 dark:text-yellow-600">Hola {user.name}</h1>
-        <p className="text-gray-700 dark:text-gray-400 mt-2">Pronto vas a tener la mejor App de ventas...</p>
 
-        <iframe title="Report Section" width="1024" height="612" src="https://app.powerbi.com/view?r=eyJrIjoiMTM1NjkyMzMtM2U5My00YWFkLWE5OGMtZmYxMmI2ZWFlMWJmIiwidCI6IjNjNGJjZjZhLTQzOTQtNDI1OC05YjVkLWZlMmZkMTg4MGFjYiIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
-      
-      </div>
-    </main>
-  </>
+  return (
+    <>
+      <header className="bg-white dark:bg-neutral-900 shadow">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200">Home</h1>
+        </div>
+      </header>
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-bold tracking-tight text-yellow-700 dark:text-yellow-600">Hola {user.name}</h1>
+          <p className="text-gray-700 dark:text-gray-400 mt-2">Pronto vas a tener la mejor App de ventas...</p>
+        </div>
+      </main>
+    </>
   )
 };
