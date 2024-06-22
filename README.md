@@ -69,7 +69,7 @@ Ya dentro de la carpeta, donde está el archivo "package.json" corre el comando 
 
 ```
 yarn
-yarn add axios react-router-dom localforage match-sorter sort-by
+yarn add axios react-router-dom localforage
 yarn add -D tailwindcss postcss autoprefixer
 yarn tailwindcss init -p
 yarn add @headlessui/react @heroicons/react
