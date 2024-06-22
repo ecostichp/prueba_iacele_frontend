@@ -69,7 +69,7 @@ export default function Login() {
                     </div>
                 </div>
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-50">
-                    ¡Hola! bienvenido
+                    ¡Hola! bienvenido a la rama development
                 </h2>
 
                 <div className="mt-12 sm:mx-auto sm:w-full sm:max-w-sm">
