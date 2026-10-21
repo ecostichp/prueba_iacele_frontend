@@ -18,7 +18,7 @@ const wep = {
 export default function AuthProvider({ children }) {
 
 
-    const [token, setToken] = useState(localStorage.getItem("leadAppToken"));
+    const [token, setToken] = useState(localStorage.getItem("iaCeleAppToken"));
     const [currentUser, setCurrentUser] = useState(wep);
 
 

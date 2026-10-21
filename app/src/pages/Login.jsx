@@ -3,10 +3,10 @@ import axios from "axios";
 
 import { TokenContext } from "../context/Context";
 
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-
 import ErrorMessage from "../components/ErrorMessage";
-import ToggleDarkMode from "../components/ToggleDarkMode";
+// import ToggleDarkMode from "../components/ToggleDarkMode";
+import { Eye, EyeOff } from "lucide-react"
+import miLogo from '@/assets/brand/Logo2021.png';
 
 import conexionServidor from '../hooks/conexionServidor'
 
@@ -39,7 +39,7 @@ export default function Login() {
         try {
             const response = await axios.post(import.meta.env.VITE_API_HOST + endpoint, datospost, config)
             const token_fetched = response.data.access_token
-            localStorage.setItem("leadAppToken", token_fetched);
+            localStorage.setItem("iaCeleAppToken", token_fetched);
             setToken(token_fetched)
         }
         catch (error) {
@@ -63,7 +63,7 @@ export default function Login() {
                     <div className="dark:bg-neutral-700 rounded-lg p-4">
                         <img
                             className="mx-auto max-h-24 w-auto"
-                            src='./brand/Logo2021.png'
+                            src={miLogo}
                             alt="La Casa Del Carpintero"
                         />
                     </div>
@@ -106,9 +106,9 @@ export default function Login() {
                             <div className="absolute inset-y-0 right-2 flex items-center">
                                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                                     {isVisible ? (
-                                        <EyeIcon className="h-6 w-6 text-blue-600 dark:text-blue-500" />
+                                        <Eye className="h-6 w-6 text-blue-600 dark:text-blue-500" />
                                     ) : (
-                                        <EyeSlashIcon className="h-6 w-6 text-gray-600 dark:text-gray-500" />
+                                        <EyeOff className="h-6 w-6 text-gray-600 dark:text-gray-500" />
                                     )}
                                 </button>
                             </div>
@@ -134,7 +134,7 @@ export default function Login() {
                     </form>
 
                     <div className="mt-4">
-                        <ToggleDarkMode />
+                        {/* <ToggleDarkMode /> */}
                     </div>
 
 
