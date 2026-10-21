@@ -4,7 +4,7 @@ import { RouterProvider } from "react-router/dom";
 import { router } from "./router"
 
 import { TokenContext } from "./context/Context";
-import Login from "./pages/Login";
+import Login from "@/app/login/login";
 
 
 function App() {
