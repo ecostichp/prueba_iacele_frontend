@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Link } from "react-router"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
@@ -183,7 +184,7 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<a href="#" />}
+              render={<Link href="/" />}
             >
               <img src={miLogo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto" />
             </SidebarMenuButton>
