@@ -23,9 +23,21 @@ import { useContext } from 'react'
 import { useNavigate } from "react-router";
 import { TokenContext } from '../context/Context'
 
-export function NavUser({
-  user
-}) {
+
+const avatars = import.meta.glob(
+  "../assets/avatars/*.png",
+  {
+    eager: true,
+    query: "?url",
+    import: "default",
+  }
+);
+
+
+export function NavUser({ user }) {
+
+  const avatarSrc = avatars[`../assets/avatars/${user.avatar}.png`]
+
   const { isMobile } = useSidebar()
 
   const navigate = useNavigate()
@@ -46,8 +58,8 @@ export function NavUser({
             }
           >
             <Avatar className="size-8 rounded-lg">
-              <AvatarImage src={new URL(`../assets/avatars/${user.avatar}.png`, import.meta.url).href} alt={user.name} />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <AvatarImage src={avatarSrc} alt={user.name} />
+              <AvatarFallback className="rounded-lg">{user.name[0].toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -67,7 +79,7 @@ export function NavUser({
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="size-8">
-                    <AvatarImage src={new URL(`../assets/avatars/${user.avatar}.png`, import.meta.url).href} alt={user.name} />
+                    <AvatarImage src={avatarSrc} alt={user.name} />
                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
