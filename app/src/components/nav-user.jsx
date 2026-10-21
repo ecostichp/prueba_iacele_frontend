@@ -46,7 +46,7 @@ export function NavUser({
             }
           >
             <Avatar className="size-8 rounded-lg">
-              <AvatarImage src={`./app/src//assets/avatars/${user.avatar}.png`} alt={user.name} />
+              <AvatarImage src={new URL(`../assets/avatars/${user.avatar}.png`, import.meta.url).href} alt={user.name} />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -67,7 +67,7 @@ export function NavUser({
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="size-8">
-                    <AvatarImage src={`../src//assets/avatars/${user.avatar}.png`} alt={user.name} />
+                    <AvatarImage src={new URL(`../assets/avatars/${user.avatar}.png`, import.meta.url).href} alt={user.name} />
                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
