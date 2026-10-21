@@ -9,7 +9,7 @@ import AuthProvider from './context/AuthProvider'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="themeIACeleApp">
       <TooltipProvider>
         <AuthProvider>
           <App />
