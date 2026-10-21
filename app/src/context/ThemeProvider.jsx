@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 
 // Estado inicial por defecto
 const initialState = {
-    theme: "system",
+    theme: "light",
     setTheme: () => null,
 }
 
@@ -10,8 +10,8 @@ const ThemeProviderContext = createContext(initialState)
 
 export function ThemeProvider({
     children,
-    defaultTheme = "system",
-    storageKey = "vite-ui-theme",
+    defaultTheme = "light",
+    storageKey = "themeIACeleApp",
     ...props
 }) {
     const [theme, setTheme] = useState(

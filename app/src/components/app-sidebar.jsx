@@ -17,6 +17,7 @@ import {
 import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon } from "lucide-react"
 import { CurrentUserContext } from '../context/Context'
 import miLogo from '@/assets/brand/Logo2021.png';
+import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
 
 const data = {
   navMain: [
@@ -186,7 +187,8 @@ export function AppSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
               render={<Link href="/" />}
             >
-              <img src={miLogo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto" />
+              <img src={miLogo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto block dark:hidden" />
+              <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto hidden dark:block" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

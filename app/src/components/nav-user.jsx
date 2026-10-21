@@ -22,6 +22,7 @@ import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, Lo
 import { useContext } from 'react'
 import { useNavigate } from "react-router";
 import { TokenContext } from '../context/Context'
+import ToggleDarkModeMode from "../components/ToggleDarkMode";
 
 
 const avatars = import.meta.glob(
@@ -59,7 +60,7 @@ export function NavUser({ user }) {
           >
             <Avatar className="size-8 rounded-lg">
               <AvatarImage src={avatarSrc} alt={user.name} />
-              <AvatarFallback className="rounded-lg">{user.name[0].toUpperCase()}</AvatarFallback>
+              <AvatarFallback className="rounded-lg">{user.name[0]}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -80,7 +81,7 @@ export function NavUser({ user }) {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="size-8">
                     <AvatarImage src={avatarSrc} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{user.name[0]}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user.name}</span>
@@ -88,6 +89,7 @@ export function NavUser({ user }) {
                       {user.position}
                     </span>
                   </div>
+                  <ToggleDarkModeMode />
                 </div>
               </DropdownMenuLabel>
             </DropdownMenuGroup>

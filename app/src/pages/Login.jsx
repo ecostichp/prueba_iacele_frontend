@@ -4,10 +4,10 @@ import axios from "axios";
 import { TokenContext } from "../context/Context";
 
 import ErrorMessage from "../components/ErrorMessage";
-// import ToggleDarkMode from "../components/ToggleDarkMode";
+import ToggleDarkMode from "../components/ToggleDarkMode";
 import { Eye, EyeOff } from "lucide-react"
 import miLogo from '@/assets/brand/Logo2021.png';
-
+import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
 import conexionServidor from '../hooks/conexionServidor'
 
 
@@ -60,10 +60,15 @@ export default function Login() {
             <p className="text-xs text-gray-500 dark:text-gray-400">{mensaje}</p>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <div className="dark:bg-neutral-700 rounded-lg p-4">
+                    <div className="dark:bg-neutral-900 rounded-lg p-4">
                         <img
-                            className="mx-auto max-h-24 w-auto"
+                            className="mx-auto max-h-24 w-auto block dark:hidden"
                             src={miLogo}
+                            alt="La Casa Del Carpintero"
+                        />
+                        <img
+                            className="mx-auto max-h-24 w-auto hidden dark:block"
+                            src={miLogoNegativo}
                             alt="La Casa Del Carpintero"
                         />
                     </div>
@@ -125,7 +130,7 @@ export default function Login() {
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 dark:bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500"
+                                className="flex w-full justify-center rounded-md bg-indigo-600 dark:bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-400 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500"
                             >
                                 Iniciar sesión
                             </button>
@@ -133,14 +138,16 @@ export default function Login() {
 
                     </form>
 
-                    <div className="mt-4">
-                        {/* <ToggleDarkMode /> */}
+                    <div className="flex justify-end w-full pt-2">
+                        <ToggleDarkMode />
                     </div>
 
 
                 </div>
 
             </div>
+
+
         </>
     )
 }

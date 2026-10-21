@@ -1,6 +1,6 @@
 import { useRouteError, Link } from "react-router";
 import miLogo from '@/assets/brand/Logo2021.png';
-
+import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
 
 export default function ErrorPage() {
 
@@ -11,10 +11,15 @@ export default function ErrorPage() {
 
     <div className="flex flex-col items-center mt-12">
 
-      <div className="dark:bg-neutral-700 rounded-lg p-4">
+      <div className="dark:bg-neutral-900 rounded-lg p-4">
         <img
-          className="mx-auto max-h-24 w-auto"
+          className="mx-auto max-h-24 w-auto block dark:hidden"
           src={miLogo}
+          alt="La Casa Del Carpintero"
+        />
+        <img
+          className="mx-auto max-h-24 w-auto hidden dark:block"
+          src={miLogoNegativo}
           alt="La Casa Del Carpintero"
         />
       </div>
