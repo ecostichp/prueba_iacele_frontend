@@ -15,7 +15,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon } from "lucide-react"
-import { CurrentUserContext } from '../context/Context'
 import miLogo from '@/assets/brand/Logo2021.png';
 import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
 
@@ -176,19 +175,18 @@ export function AppSidebar({
   ...props
 }) {
 
-  const user = useContext(CurrentUserContext)
-
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<Link href="/" />}
+              className="data-[slot=sidebar-menu-button]:p-1.5! flex items-center justify-center w-full"
             >
-              <img src={miLogo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto block dark:hidden" />
-              <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto hidden dark:block" />
+              <Link to="/">
+                <img src={miLogo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto block dark:hidden" />
+                <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto hidden dark:block" />
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -199,7 +197,7 @@ export function AppSidebar({
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

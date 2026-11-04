@@ -21,7 +21,7 @@ import {
 import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
 import { useContext } from 'react'
 import { useNavigate } from "react-router";
-import { TokenContext } from '../context/Context'
+import { TokenContext, CurrentUserContext } from '../context/Context'
 import ToggleDarkModeMode from "../components/ToggleDarkMode";
 
 
@@ -35,14 +35,16 @@ const avatars = import.meta.glob(
 );
 
 
-export function NavUser({ user }) {
-
-  const avatarSrc = avatars[`../assets/avatars/${user.avatar}.png`]
+export function NavUser() {
 
   const { isMobile } = useSidebar()
-
   const navigate = useNavigate()
+
+  const user = useContext(CurrentUserContext)
+  const avatarSrc = avatars[`../assets/avatars/${user.avatar}`]
+
   const { setToken } = useContext(TokenContext)
+
   const handleLogout = (e) => {
     navigate("/")
     localStorage.removeItem("iaCeleAppToken")
@@ -59,13 +61,13 @@ export function NavUser({ user }) {
             }
           >
             <Avatar className="size-8 rounded-lg">
-              <AvatarImage src={avatarSrc} alt={user.name} />
-              <AvatarFallback className="rounded-lg">{user.name[0]}</AvatarFallback>
+              <AvatarImage src={avatarSrc} alt={user.username} />
+              <AvatarFallback className="rounded-lg">{user.username[0]}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
+              <span className="truncate font-medium">{user.username}</span>
               <span className="truncate text-xs text-foreground/70">
-                {user.position}
+                {user.tipo}
               </span>
             </div>
             <EllipsisVerticalIcon className="ml-auto size-4" />
@@ -80,13 +82,13 @@ export function NavUser({ user }) {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="size-8">
-                    <AvatarImage src={avatarSrc} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">{user.name[0]}</AvatarFallback>
+                    <AvatarImage src={avatarSrc} alt={user.username} />
+                    <AvatarFallback className="rounded-lg">{user.username[0]}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate font-medium">{user.username}</span>
                     <span className="truncate text-xs text-muted-foreground">
-                      {user.position}
+                      {user.tipo}
                     </span>
                   </div>
                   <ToggleDarkModeMode />

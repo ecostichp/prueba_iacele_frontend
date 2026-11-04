@@ -7,10 +7,12 @@ import { TokenContext, CurrentUserContext } from "../context/Context";
 
 
 const wep = {
-    avatar: "no-avatar",
-    hashed_password: "",
-    name: "",
-    position: ""
+    avatar: "",
+    empleado_id: "",
+    fecha_alta: "",
+    password_hashed: "",
+    tipo: "",
+    username: ""
 }
 
 
@@ -24,7 +26,7 @@ export default function AuthProvider({ children }) {
 
     const fetchUser = async () => {
 
-        const endpoint = 'authentication/users/me'
+        const endpoint = 'authentication/user/me'
         const config = { headers: { "Authorization": "Bearer " + token } }
 
         try {
