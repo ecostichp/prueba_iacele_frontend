@@ -23,9 +23,32 @@ function Tooltip({
 }
 
 function TooltipTrigger({
+  asChild, // Extraemos asChild para evitar que se pase al DOM
+  render,  // Extraemos render por si usas la convención de Base UI
+  children,
   ...props
 }) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+  // Si en tu proyecto pasaste asChild, emulamos el comportamiento usando la prop 'render' de Base UI
+  if (asChild && children) {
+    return (
+      <TooltipPrimitive.Trigger
+        data-slot="tooltip-trigger"
+        render={children}
+        {...props}
+      />
+    )
+  }
+
+  // Comportamiento normal por defecto
+  return (
+    <TooltipPrimitive.Trigger
+      data-slot="tooltip-trigger"
+      render={render}
+      {...props}
+    >
+      {children}
+    </TooltipPrimitive.Trigger>
+  )
 }
 
 function TooltipContent({

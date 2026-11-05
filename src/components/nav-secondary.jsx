@@ -10,10 +10,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-export function NavSecondary({
-  items,
-  ...props
-}) {
+
+export function NavSecondary({ items, ...props }) {
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>

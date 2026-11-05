@@ -15,7 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { BoxIcon, CameraIcon, ChartBarIcon, CircleHelpIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, FileTextIcon, FolderIcon, LayoutDashboardIcon, SearchIcon, Settings2Icon, UsersIcon } from "lucide-react";
+import { ListXIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, LayoutDashboardIcon, UsersIcon } from "lucide-react";
 
 const data = {
   navMain: [
@@ -27,30 +27,32 @@ const data = {
       ),
     },
     {
-      title: "Conteo de inventario",
+      title: "Mis registros de inventario",
       url: "/inventory",
       icon: (
-        <BoxIcon />
+        <NotebookPen />
       ),
     },
     {
-      title: "Analytics",
+      title: "Diferencias en equipo",
       url: "#",
       icon: (
-        <ChartBarIcon
+        <ListXIcon
         />
       ),
     },
     {
-      title: "Projects",
+      title: "Conteos dobles",
       url: "#",
       icon: (
-        <FolderIcon
+        <Layers2Icon
         />
       ),
     },
+  ],
+  navSecondary: [
     {
-      title: "Team",
+      title: "Mi equipo",
       url: "#",
       icon: (
         <UsersIcon
@@ -58,92 +60,9 @@ const data = {
       ),
     },
   ],
-  navClouds: [
+  gerentes: [
     {
-      title: "Capture",
-      icon: (
-        <CameraIcon
-        />
-      ),
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: (
-        <FileTextIcon
-        />
-      ),
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: (
-        <FileTextIcon
-        />
-      ),
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: (
-        <Settings2Icon
-        />
-      ),
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: (
-        <CircleHelpIcon
-        />
-      ),
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: (
-        <SearchIcon
-        />
-      ),
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
+      name: "Todos los registros",
       url: "#",
       icon: (
         <DatabaseIcon
@@ -151,7 +70,7 @@ const data = {
       ),
     },
     {
-      name: "Reports",
+      name: "Métricas",
       url: "#",
       icon: (
         <FileChartColumnIcon
@@ -159,10 +78,10 @@ const data = {
       ),
     },
     {
-      name: "Word Assistant",
+      name: "Todos los equipos",
       url: "#",
       icon: (
-        <FileIcon
+        <UserGroupIcon
         />
       ),
     },
@@ -190,7 +109,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        <NavDocuments items={data.gerentes} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
