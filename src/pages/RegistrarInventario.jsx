@@ -33,6 +33,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import TableCellViewer from "@/components/table-cell-viewer"
+
 // ======================================================
 // 1. CONFIGURACIÓN DE TANSTACK TABLE V9
 // ======================================================
@@ -180,10 +182,21 @@ const columns = columnHelper.columns([
     sortingFn: "alphanumeric",
   }),
 
+
   // Nombre
   columnHelper.accessor("nombre", {
     header: sortableHeader("Producto"),
     sortingFn: "text",
+    cell: ({ row }) => {
+
+      const datosAdaptados = {
+        ...row.original,
+        header: row.original.nombre // ◄ Clonamos 'nombre' dentro de 'header'
+      };
+
+      return <TableCellViewer item={datosAdaptados} />
+    },
+    enableHiding: false,
   }),
 
   // Categoría
