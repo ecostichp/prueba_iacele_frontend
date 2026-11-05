@@ -1,10 +1,11 @@
-import { useContext } from "react";
-import { Link } from "react-router"
+import { Link } from "react-router";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import miLogo from '@/assets/brand/Logo2021.png';
+import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
+import { NavDocuments } from "@/components/nav-documents";
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -13,27 +14,23 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, ListIcon, ChartBarIcon, FolderIcon, UsersIcon, CameraIcon, FileTextIcon, Settings2Icon, CircleHelpIcon, SearchIcon, DatabaseIcon, FileChartColumnIcon, FileIcon } from "lucide-react"
-import miLogo from '@/assets/brand/Logo2021.png';
-import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
+} from "@/components/ui/sidebar";
+import { BoxIcon, CameraIcon, ChartBarIcon, CircleHelpIcon, DatabaseIcon, FileChartColumnIcon, FileIcon, FileTextIcon, FolderIcon, LayoutDashboardIcon, SearchIcon, Settings2Icon, UsersIcon } from "lucide-react";
 
 const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/",
       icon: (
-        <LayoutDashboardIcon
-        />
+        <LayoutDashboardIcon />
       ),
     },
     {
-      title: "Lifecycle",
-      url: "#",
+      title: "Conteo de inventario",
+      url: "/inventory",
       icon: (
-        <ListIcon
-        />
+        <BoxIcon />
       ),
     },
     {
@@ -181,11 +178,11 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="data-[slot=sidebar-menu-button]:p-1.5! flex items-center justify-center w-full"
+              className="flex justify-center items-center data-[slot=sidebar-menu-button]:p-1.5! w-full"
             >
               <Link to="/">
-                <img src={miLogo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto block dark:hidden" />
-                <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="h-9 w-auto object-contain mx-auto hidden dark:block" />
+                <img src={miLogo} alt="La Casa Del Carpintero" className="dark:hidden block mx-auto w-auto h-9 object-contain" />
+                <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="hidden dark:block mx-auto w-auto h-9 object-contain" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

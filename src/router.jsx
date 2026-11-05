@@ -1,23 +1,26 @@
 import { createBrowserRouter } from "react-router";
-
-import Dashboard from "./app/dashboard/dashboard"
-import ErrorPage from './pages/ErrorPage'
-// import MainLayOut from "./layouts/MainLayOut";
-// import Home from "./pages/Home";
-// import Dashboard from "./pages/Dashboard";
-// import DifLayOut from "./layouts/DifLayOut";
-// import Algo from './pages/Algo'
-// import Register from "./pages/RegisterNewUser";
-
-
+import MainLayout from "./layouts/MainLayout";
+import Dashboard from "./pages/dashboard";
+import ErrorPage from './pages/ErrorPage';
+import InventoryIndividualCount from "./pages/InventoryIndividualCount";
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Dashboard />,
+    element: <MainLayout />,
     errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: '/inventory',
+        element: <InventoryIndividualCount />,
+      },
+    ],
   },
-])
+]);
 
 
 

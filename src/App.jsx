@@ -1,10 +1,10 @@
 import { useContext } from "react";
 
 import { RouterProvider } from "react-router/dom";
-import { router } from "./router"
+import { router } from "./router";
 
+import Login from "@/pages/login";
 import { TokenContext } from "./context/Context";
-import Login from "@/app/login/login";
 
 
 function App() {
