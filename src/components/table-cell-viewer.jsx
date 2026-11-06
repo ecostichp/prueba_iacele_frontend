@@ -27,6 +27,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import BACKEND_URL from "@/constants/values";
 import { useMyCounts } from "@/context/MyCountsContext";
+import { formatCaboDate } from "@/lib/datetime";
 
 const formatQty = (value) => {
   const number = Number(value);
@@ -36,21 +37,18 @@ const formatQty = (value) => {
     : number.toLocaleString("es-MX", { maximumFractionDigits: 2 });
 };
 
-const formatDate = (value) => {
-  if (!value) return "—";
-  return new Date(value).toLocaleString("es-MX", {
-    dateStyle: "short",
-    timeStyle: "short",
-  });
-};
+const formatDate = (value) => formatCaboDate(value) || "—";
 
 const errorDetail = (error, fallback) =>
   error?.response?.data?.detail || fallback;
 
-export default function TableCellViewer({ item }) {
+export default function TableCellViewer({ item, open: openProp, onOpenChange }) {
   const isMobile = useIsMobile();
   const { employeeId, teamId, refresh } = useMyCounts();
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = openProp ?? openState;
+  const setOpen = onOpenChange ?? setOpenState;
+  const controlled = onOpenChange != null;
   const [qty, setQty] = useState("");
   const [registers, setRegisters] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -155,16 +153,18 @@ export default function TableCellViewer({ item }) {
       onOpenChange={setOpen}
       swipeDirection={isMobile ? "down" : "right"}
     >
-      <DrawerTrigger
-        render={
-          <Button
-            variant="link"
-            className="h-auto w-full min-w-0 justify-start px-0 text-left whitespace-normal text-foreground"
-          />
-        }
-      >
-        {title}
-      </DrawerTrigger>
+      {!controlled && (
+        <DrawerTrigger
+          render={
+            <Button
+              variant="link"
+              className="h-auto w-full min-w-0 justify-start px-0 text-left whitespace-normal text-foreground"
+            />
+          }
+        >
+          {title}
+        </DrawerTrigger>
+      )}
       <DrawerContent className="data-[swipe-axis=y]:[--drawer-content-max-height:92dvh]! data-[swipe-axis=x]:sm:[--drawer-content-width:42rem]!">
         <DrawerHeader className="text-left">
           <DrawerTitle className="text-lg leading-snug">{title}</DrawerTitle>

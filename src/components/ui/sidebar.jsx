@@ -177,7 +177,17 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div
+            className="flex h-full w-full flex-col"
+            onClick={(event) => {
+              const target = event.target instanceof Element ? event.target : null
+              if (!target) return
+              if (target.closest("[data-slot=dropdown-menu-trigger]")) return
+              setOpenMobile(false)
+            }}
+          >
+            {children}
+          </div>
         </SheetContent>
       </Sheet>
     );
@@ -502,13 +512,20 @@ function SidebarMenuButton({
   size = "default",
   tooltip,
   className,
+  onClick,
   ...props
 }) {
-  const { isMobile, state } = useSidebar()
+  const { isMobile, state, setOpenMobile } = useSidebar()
   const comp = useRender({
     defaultTagName: "button",
     props: mergeProps({
       className: cn(sidebarMenuButtonVariants({ variant, size }), className),
+      onClick: (event) => {
+        onClick?.(event)
+        if (isMobile && event.currentTarget.tagName === "A") {
+          setOpenMobile(false)
+        }
+      },
     }, props),
     render: !tooltip ? render : <TooltipTrigger render={render} />,
     state: {

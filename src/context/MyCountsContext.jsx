@@ -6,6 +6,7 @@ import { CurrentUserContext } from "@/context/Context";
 
 const MyCountsContext = createContext({
     totals: {},
+    lastCounts: {},
     employeeId: null,
     teamId: null,
     refresh: async () => {},
@@ -15,11 +16,13 @@ export function MyCountsProvider({ children }) {
     const user = useContext(CurrentUserContext);
     const employeeId = Number(user?.empleado_id) || null;
     const [totals, setTotals] = useState({});
+    const [lastCounts, setLastCounts] = useState({});
     const [teamId, setTeamId] = useState(null);
 
     const refresh = useCallback(async () => {
         if (!employeeId) {
             setTotals({});
+            setLastCounts({});
             return;
         }
 
@@ -27,14 +30,20 @@ export function MyCountsProvider({ children }) {
             `${BACKEND_URL}inventory/individuals/id/${employeeId}`
         );
         const next = {};
+        const dates = {};
         for (const row of response.data) {
             next[row.id_products] = row.total_qty;
+            dates[row.id_products] = row.last_count;
         }
         setTotals(next);
+        setLastCounts(dates);
     }, [employeeId]);
 
     useEffect(() => {
-        refresh().catch(() => setTotals({}));
+        refresh().catch(() => {
+            setTotals({});
+            setLastCounts({});
+        });
     }, [refresh]);
 
     useEffect(() => {
@@ -63,7 +72,7 @@ export function MyCountsProvider({ children }) {
     }, [employeeId]);
 
     return (
-        <MyCountsContext.Provider value={{ totals, employeeId, teamId, refresh }}>
+        <MyCountsContext.Provider value={{ totals, lastCounts, employeeId, teamId, refresh }}>
             {children}
         </MyCountsContext.Provider>
     );

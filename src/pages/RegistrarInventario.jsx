@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 import TableCellViewer from "@/components/table-cell-viewer"
+import { formatCaboDate } from "@/lib/datetime"
 import useProducts from "@/hooks/useProducts"
 import { MyCountsProvider, useMyCounts } from "@/context/MyCountsContext"
 
@@ -60,13 +61,7 @@ const features = tableFeatures({
   },
 });
 
-const formatDate = (value) => {
-  if (!value) return "";
-  return new Date(value).toLocaleString("es-MX", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-};
+const formatDate = formatCaboDate;
 
 // ======================================================
 // 2. CONFIGURACIÓN DE COLUMNAS
@@ -114,39 +109,75 @@ function CountedCell({ productId }) {
   );
 }
 
-const columns = columnHelper.columns([
-  columnHelper.accessor("code", {
-    header: sortableHeader("Código"),
-    sortingFn: "alphanumeric",
-  }),
+function ProductCell({ product }) {
+  const { lastCounts } = useMyCounts();
+  const date = formatDate(lastCounts[product.id]);
 
-  columnHelper.accessor("id_odoo", {
-    header: sortableHeader("ID Odoo"),
-    sortingFn: "alphanumeric",
-  }),
+  return (
+    <div className="flex min-w-0 flex-col gap-1.5">
+      <span className="block text-left whitespace-normal">{product.name}</span>
+      <div className="flex items-center justify-between gap-2 md:hidden">
+        {date ? (
+          <span className="text-xs text-muted-foreground">{date}</span>
+        ) : (
+          <span className="text-[10px] leading-tight text-muted-foreground/50">
+            No hay conteos registrados
+          </span>
+        )}
+        <CountedCell productId={product.id} />
+      </div>
+    </div>
+  );
+}
 
-  columnHelper.accessor("name", {
-    header: sortableHeader("Producto"),
-    sortingFn: "text",
-    filterFn: "includesString",
-    cell: ({ row }) => (
-      <TableCellViewer item={{ ...row.original, header: row.original.name }} />
-    ),
-    enableHiding: false,
-  }),
+function createColumns(lastCounts) {
+  return columnHelper.columns([
+    columnHelper.accessor("code", {
+      header: sortableHeader("Código"),
+      sortingFn: "alphanumeric",
+      cell: ({ getValue }) => <span className="font-bold">{getValue()}</span>,
+      meta: { className: "w-[5.5rem] whitespace-normal px-2 md:w-28 md:px-3" },
+    }),
 
-  columnHelper.display({
-    id: "contado",
-    header: "Contado",
-    cell: ({ row }) => <CountedCell productId={row.original.id} />,
-  }),
+    columnHelper.accessor("name", {
+      header: sortableHeader("Producto"),
+      sortingFn: "text",
+      filterFn: "includesString",
+      cell: ({ row }) => <ProductCell product={row.original} />,
+      enableHiding: false,
+      meta: { className: "whitespace-normal" },
+    }),
 
-  columnHelper.accessor("fecha_alta", {
-    header: sortableHeader("Fecha de creación"),
-    sortingFn: "alphanumeric",
-    cell: ({ getValue }) => formatDate(getValue()),
-  }),
-]);
+    columnHelper.display({
+      id: "contado",
+      header: () => (
+        <span className="block text-xs font-medium leading-tight">
+          Cantidad
+          <br />
+          contada
+        </span>
+      ),
+      cell: ({ row }) => <CountedCell productId={row.original.id} />,
+      meta: { className: "hidden w-24 whitespace-normal px-2 md:table-cell" },
+    }),
+
+    columnHelper.accessor((row) => lastCounts[row.id] || "", {
+      id: "last_count",
+      header: sortableHeader("Fecha de creación"),
+      sortingFn: "alphanumeric",
+      cell: ({ getValue }) => {
+        const date = formatDate(getValue());
+        if (date) return date;
+        return (
+          <span className="text-[10px] font-normal leading-tight text-muted-foreground/50">
+            No hay conteos registrados
+          </span>
+        );
+      },
+      meta: { className: "hidden w-56 whitespace-nowrap md:table-cell" },
+    }),
+  ]);
+}
 
 // ======================================================
 // 4. COMPONENTE PRINCIPAL
@@ -162,8 +193,10 @@ export default function RegistrarInventario() {
 
 function InventarioTable() {
   const { products, status, error } = useProducts();
-  const { totals } = useMyCounts();
+  const { totals, lastCounts } = useMyCounts();
   const [onlyCounted, setOnlyCounted] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [pagination, setPagination] = React.useState({
@@ -174,6 +207,11 @@ function InventarioTable() {
   const countedProducts = React.useMemo(
     () => products.filter((product) => Number(totals[product.id] ?? 0) > 0),
     [products, totals]
+  );
+
+  const columns = React.useMemo(
+    () => createColumns(lastCounts),
+    [lastCounts]
   );
 
   const table = useTable({
@@ -248,9 +286,9 @@ function InventarioTable() {
 
       {/* TABLA */}
       <div className="overflow-hidden rounded-md border">
-      <div className="overflow-x-auto">
+      <div className="max-md:[&_[data-slot=table-container]]:overflow-x-hidden">
 
-        <Table>
+        <Table className="table-fixed">
 
           {/* ENCABEZADOS */}
           <TableHeader>
@@ -293,7 +331,14 @@ function InventarioTable() {
             ) : table.getRowModel().rows.length > 0 ? (
 
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setSelected(row.original);
+                    setDrawerOpen(true);
+                  }}
+                >
 
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className={cell.column.columnDef.meta?.className}>
@@ -324,6 +369,13 @@ function InventarioTable() {
         </Table>
 
       </div>
+        {selected && (
+          <TableCellViewer
+            item={{ ...selected, header: selected.name }}
+            open={drawerOpen}
+            onOpenChange={setDrawerOpen}
+          />
+        )}
         <div className="flex justify-end border-t bg-muted/40 px-3 py-2">
           <Button
             size="sm"
@@ -331,7 +383,7 @@ function InventarioTable() {
             aria-pressed={onlyCounted}
             onClick={showOnlyCounted}
           >
-            Contados
+            códigos contados
             <span className="tabular-nums">{countedProducts.length}</span>
           </Button>
         </div>
