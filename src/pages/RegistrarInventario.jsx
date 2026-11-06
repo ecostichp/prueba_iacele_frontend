@@ -10,7 +10,6 @@ import {
   columnFilteringFeature,
   columnVisibilityFeature, // AGREGAR
   rowPaginationFeature,
-  rowSelectionFeature,
   rowSortingFeature,
   createFilteredRowModel,
   createPaginatedRowModel,
@@ -31,10 +30,11 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 import TableCellViewer from "@/components/table-cell-viewer"
 import useProducts from "@/hooks/useProducts"
+import { MyCountsProvider, useMyCounts } from "@/context/MyCountsContext"
 
 // ======================================================
 // 1. CONFIGURACIÓN DE TANSTACK TABLE V9
@@ -44,7 +44,6 @@ const features = tableFeatures({
   columnFilteringFeature,
   columnVisibilityFeature, // AGREGAR
   rowPaginationFeature,
-  rowSelectionFeature,
   rowSortingFeature,
 
   filteredRowModel: createFilteredRowModel(),
@@ -60,12 +59,6 @@ const features = tableFeatures({
     text: sortFn_text,
   },
 });
-
-const formatMoney = (value) =>
-  Number(value ?? 0).toLocaleString("es-MX", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
 
 const formatDate = (value) => {
   if (!value) return "";
@@ -100,68 +93,31 @@ const sortableHeader = (title) => {
   );
 };
 
+const formatQty = (value) => {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number === 0) return "0";
+  return Number.isInteger(number)
+    ? number.toLocaleString("es-MX")
+    : number.toLocaleString("es-MX", { maximumFractionDigits: 2 });
+};
+
+function CountedCell({ productId }) {
+  const { totals } = useMyCounts();
+  const total = Number(totals[productId] ?? 0);
+
+  if (!Number.isFinite(total) || total <= 0) return null;
+
+  return (
+    <Badge>
+      {formatQty(total)}
+    </Badge>
+  );
+}
+
 const columns = columnHelper.columns([
-  // Selección
-  columnHelper.display({
-    id: "select",
-
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        indeterminate={
-          table.getIsSomePageRowsSelected() &&
-          !table.getIsAllPageRowsSelected()
-        }
-        onCheckedChange={(value) =>
-          table.toggleAllPageRowsSelected(value)
-        }
-        aria-label="Seleccionar todos"
-      />
-    ),
-
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) =>
-          row.toggleSelected(!!value)
-        }
-        aria-label="Seleccionar producto"
-      />
-    ),
-
-    enableSorting: false,
-  }),
-
   columnHelper.accessor("code", {
     header: sortableHeader("Código"),
     sortingFn: "alphanumeric",
-  }),
-
-  columnHelper.accessor("name", {
-    header: sortableHeader("Producto"),
-    sortingFn: "text",
-    filterFn: "includesString",
-    cell: ({ row }) => {
-      const datosAdaptados = {
-        ...row.original,
-        header: row.original.name,
-      };
-
-      return <TableCellViewer item={datosAdaptados} />
-    },
-    enableHiding: false,
-  }),
-
-  columnHelper.accessor("cost", {
-    header: sortableHeader("Costo"),
-    sortingFn: "alphanumeric",
-    cell: ({ getValue }) => formatMoney(getValue()),
-  }),
-
-  columnHelper.accessor("price", {
-    header: sortableHeader("Precio"),
-    sortingFn: "alphanumeric",
-    cell: ({ getValue }) => formatMoney(getValue()),
   }),
 
   columnHelper.accessor("id_odoo", {
@@ -169,8 +125,24 @@ const columns = columnHelper.columns([
     sortingFn: "alphanumeric",
   }),
 
+  columnHelper.accessor("name", {
+    header: sortableHeader("Producto"),
+    sortingFn: "text",
+    filterFn: "includesString",
+    cell: ({ row }) => (
+      <TableCellViewer item={{ ...row.original, header: row.original.name }} />
+    ),
+    enableHiding: false,
+  }),
+
+  columnHelper.display({
+    id: "contado",
+    header: "Contado",
+    cell: ({ row }) => <CountedCell productId={row.original.id} />,
+  }),
+
   columnHelper.accessor("fecha_alta", {
-    header: sortableHeader("Alta"),
+    header: sortableHeader("Fecha de creación"),
     sortingFn: "alphanumeric",
     cell: ({ getValue }) => formatDate(getValue()),
   }),
@@ -181,30 +153,42 @@ const columns = columnHelper.columns([
 // ======================================================
 
 export default function RegistrarInventario() {
+  return (
+    <MyCountsProvider>
+      <InventarioTable />
+    </MyCountsProvider>
+  );
+}
+
+function InventarioTable() {
   const { products, status, error } = useProducts();
+  const { totals } = useMyCounts();
+  const [onlyCounted, setOnlyCounted] = React.useState(false);
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
-  const [rowSelection, setRowSelection] = React.useState({});
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
+  const countedProducts = React.useMemo(
+    () => products.filter((product) => Number(totals[product.id] ?? 0) > 0),
+    [products, totals]
+  );
+
   const table = useTable({
     features,
-    data: products,
+    data: onlyCounted ? countedProducts : products,
     columns,
     getRowId: (row) => String(row.id),
 
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
 
     state: {
       sorting,
       columnFilters,
-      rowSelection,
       pagination,
     },
   });
@@ -213,8 +197,13 @@ export default function RegistrarInventario() {
   // 5. INTERFAZ
   // ====================================================
 
+  const showOnlyCounted = () => {
+    setOnlyCounted((current) => !current);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+
   return (
-    <div className="w-full p-6 space-y-6">
+    <div className="w-full space-y-4 p-4 sm:space-y-6 sm:p-6">
 
       {/* ENCABEZADO */}
       <div>
@@ -228,7 +217,7 @@ export default function RegistrarInventario() {
       </div>
 
       {/* BUSCADOR */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
 
         <Input
           placeholder="Buscar producto..."
@@ -240,15 +229,16 @@ export default function RegistrarInventario() {
               .getColumn("name")
               ?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full sm:max-w-sm"
         />
 
         <Button
           variant="outline"
           onClick={() => {
+            setOnlyCounted(false);
+            setPagination((current) => ({ ...current, pageIndex: 0 }));
             table.resetColumnFilters();
             table.resetSorting();
-            table.resetRowSelection();
           }}
         >
           Limpiar filtros
@@ -257,7 +247,8 @@ export default function RegistrarInventario() {
       </div>
 
       {/* TABLA */}
-      <div className="overflow-x-auto rounded-md border">
+      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-x-auto">
 
         <Table>
 
@@ -267,7 +258,7 @@ export default function RegistrarInventario() {
               <TableRow key={headerGroup.id}>
 
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className={header.column.columnDef.meta?.className}>
                     {header.isPlaceholder ? null : (
                       <table.FlexRender header={header} />
                     )}
@@ -302,15 +293,10 @@ export default function RegistrarInventario() {
             ) : table.getRowModel().rows.length > 0 ? (
 
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={
-                    row.getIsSelected() && "selected"
-                  }
-                >
+                <TableRow key={row.id}>
 
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className={cell.column.columnDef.meta?.className}>
                       <table.FlexRender cell={cell} />
                     </TableCell>
                   ))}
@@ -325,7 +311,9 @@ export default function RegistrarInventario() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No se encontraron productos.
+                  {onlyCounted
+                    ? "Todavía no tienes productos contados."
+                    : "No se encontraron productos."}
                 </TableCell>
               </TableRow>
 
@@ -336,15 +324,25 @@ export default function RegistrarInventario() {
         </Table>
 
       </div>
+        <div className="flex justify-end border-t bg-muted/40 px-3 py-2">
+          <Button
+            size="sm"
+            variant={onlyCounted ? "default" : "outline"}
+            aria-pressed={onlyCounted}
+            onClick={showOnlyCounted}
+          >
+            Contados
+            <span className="tabular-nums">{countedProducts.length}</span>
+          </Button>
+        </div>
+      </div>
 
       {/* PIE Y PAGINACIÓN */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
         <p className="text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length}
-          {" "}de{" "}
           {table.getFilteredRowModel().rows.length}
-          {" "}producto(s) seleccionados.
+          {" "}producto(s).
         </p>
 
         <div className="flex items-center gap-2">
