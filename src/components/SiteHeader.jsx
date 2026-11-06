@@ -5,6 +5,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 const pageTitles = {
   "/": "Mis registros",
   "/inventory_register": "Registrar inventario",
+  "/database/inventory": "Base de datos",
+  "/all_records": "Todos los registros",
+  "/coworkers": "Mis compañeros",
 }
 
 export function SiteHeader() {

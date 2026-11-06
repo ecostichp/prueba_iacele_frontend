@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import { API_URL } from "@/constants/api";
 import { useAuth } from "@/context/auth";
+import { canSeeDatabaseMenu, canSeeManagerMenu } from "@/lib/access";
 
 import logo from "@/assets/brand/Logo2021.png";
 import inverseLogo from "@/assets/brand/LogoNegativo2021.png";
@@ -15,12 +16,14 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ListXIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, UsersIcon } from "lucide-react";
+import { ListXIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
 
 const navigation = {
   navMain: [
@@ -57,11 +60,19 @@ const navigation = {
         />
       ),
     },
+    {
+      title: "Mis compañeros",
+      url: "/coworkers",
+      icon: (
+        <UserGroupIcon
+        />
+      ),
+    },
   ],
   managers: [
     {
       name: "Todos los registros",
-      url: "#",
+      url: "/all_records",
       icon: (
         <DatabaseIcon
         />
@@ -79,24 +90,17 @@ const navigation = {
       name: "Todos los equipos",
       url: "#",
       icon: (
-        <UserGroupIcon
+        <UsersRoundCollaborationIcon
         />
       ),
     },
   ],
 }
-function canSeeManagerMenu(user, jobTitle) {
-  if (!user) return false;
-  if (user.tipo === "accionista" || user.username === "lic") return true;
-  const title = (jobTitle || "").trim().toLocaleLowerCase("es-MX");
-  if (title === "administración general") return true;
-  return title.startsWith("gerente");
-}
-
 export function AppSidebar({
   ...props
 }) {
   const { user } = useAuth();
+  const { pathname } = useLocation();
   const [jobTitle, setJobTitle] = useState("");
 
   useEffect(() => {
@@ -118,7 +122,8 @@ export function AppSidebar({
     };
   }, [user?.empleado_id]);
 
-  const showManagers = canSeeManagerMenu(user, jobTitle);
+  const showManagers = canSeeManagerMenu(jobTitle);
+  const showDatabase = canSeeDatabaseMenu(jobTitle);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -136,9 +141,27 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navigation.navMain} />
+        <NavMain />
+        <NavSecondary label="Inventario" items={navigation.navMain} />
+        <NavSecondary label="Personas" items={navigation.navSecondary} />
         {showManagers && <NavDocuments items={navigation.managers} />}
-        <NavSecondary items={navigation.navSecondary} className="mt-auto" />
+        {showDatabase && (
+          <SidebarGroup className="mt-auto group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel>Base de datos</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  render={<Link to="/database/inventory" />}
+                  isActive={pathname === "/database/inventory"}
+                  tooltip="Borrar inventario"
+                >
+                  <Trash2Icon />
+                  <span>Borrar inventario</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

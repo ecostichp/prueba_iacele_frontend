@@ -21,23 +21,14 @@ import {
 import { EllipsisVerticalIcon, Settings2Icon, LogOutIcon } from "lucide-react"
 import { useAuth } from "@/context/auth";
 import ThemeToggle from "@/components/ThemeToggle";
-
-
-const avatars = import.meta.glob(
-  "../assets/avatars/*.png",
-  {
-    eager: true,
-    query: "?url",
-    import: "default",
-  }
-);
+import { avatarUrl } from "@/lib/avatars";
 
 
 export function NavUser() {
 
   const { isMobile } = useSidebar()
   const { user, logout } = useAuth()
-  const avatarSrc = user?.avatar ? avatars[`../assets/avatars/${user.avatar}`] : undefined
+  const avatarSrc = avatarUrl(user?.avatar)
   const initial = (user?.username || "?").slice(0, 1).toUpperCase()
 
   const handleLogout = () => {
@@ -90,9 +81,11 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Settings2Icon
-                />
+              <DropdownMenuItem
+                disabled
+                className="text-muted-foreground/35 focus:bg-transparent focus:text-muted-foreground/40 data-disabled:opacity-100 [&_svg]:text-muted-foreground/35"
+              >
+                <Settings2Icon />
                 Configuración
               </DropdownMenuItem>
             </DropdownMenuGroup>

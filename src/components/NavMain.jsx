@@ -9,15 +9,12 @@ import { CirclePlusIcon } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
 
-const pendingItemClass =
-  "text-muted-foreground/35 hover:bg-transparent hover:text-muted-foreground/40 [&_svg]:text-muted-foreground/35";
-
-export function NavMain({ items }) {
+export function NavMain() {
   const { pathname } = useLocation();
 
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
+      <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
@@ -30,25 +27,6 @@ export function NavMain({ items }) {
               <span>Registrar inventario</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        </SidebarMenu>
-        <SidebarMenu>
-          {items.map((item) => {
-            const pending = !item.url || item.url === "#";
-            return (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                render={pending ? <button type="button" /> : <Link to={item.url} />}
-                isActive={!pending && pathname === item.url}
-                tooltip={item.title}
-                aria-disabled={pending || undefined}
-                className={pending ? pendingItemClass : undefined}
-              >
-                {item.icon}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            );
-          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
