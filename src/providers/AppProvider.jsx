@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 
 const AppProvider = ({ children }) => {
 
-    const { products } = useGetProducts();
+    const productsState = useGetProducts();
 
     return (
-        <ProductsContext.Provider value={{ products }}>
+        <ProductsContext.Provider value={productsState}>
             {children}
         </ProductsContext.Provider>
     );
@@ -17,19 +17,33 @@ const AppProvider = ({ children }) => {
 const useGetProducts = () => {
 
     const [ products, setProducts ] = useState([]);
+    const [ status, setStatus ] = useState("loading");
+    const [ error, setError ] = useState("");
 
-    const get = async () => {
-        const response = await axios.get(`${BACKEND_URL}/products`);
-        setProducts(response.data);
-    };
+    useEffect(() => {
+        let cancelled = false;
 
-    useEffect(
-        () => {
-            get();
-        }, []
-    );
+        const get = async () => {
+            try {
+                const response = await axios.get(`${BACKEND_URL}products/`);
+                if (cancelled) return;
+                setProducts(response.data);
+                setStatus("ready");
+            } catch {
+                if (cancelled) return;
+                setError("No se pudieron cargar los productos.");
+                setStatus("error");
+            }
+        };
 
-    return { products };
+        get();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    return { products, status, error };
 };
 
 export default AppProvider;

@@ -3,9 +3,9 @@ import { useContext } from "react";
 
 const useProducts = () => {
 
-    const { products } = useContext(ProductsContext);
+    const { products, status, error } = useContext(ProductsContext);
 
-    return { products };
+    return { products, status, error };
 };
 
 export default useProducts;

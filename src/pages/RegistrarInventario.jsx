@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import TableCellViewer from "@/components/table-cell-viewer"
+import useProducts from "@/hooks/useProducts"
 
 // ======================================================
 // 1. CONFIGURACIÓN DE TANSTACK TABLE V9
@@ -60,65 +61,22 @@ const features = tableFeatures({
   },
 });
 
-// ======================================================
-// 2. DATOS DE INVENTARIO
-// ======================================================
+const formatMoney = (value) =>
+  Number(value ?? 0).toLocaleString("es-MX", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
-const datosInventario = [
-  {
-    id: "1",
-    codigo: "PROD-001",
-    nombre: "Laptop Lenovo ThinkPad",
-    categoria: "Electrónica",
-    stock: 15,
-    unidad: "Piezas",
-    ubicacion: "Almacén A",
-    estado: "Disponible",
-  },
-  {
-    id: "2",
-    codigo: "PROD-002",
-    nombre: "Mouse inalámbrico",
-    categoria: "Accesorios",
-    stock: 3,
-    unidad: "Piezas",
-    ubicacion: "Almacén B",
-    estado: "Stock bajo",
-  },
-  {
-    id: "3",
-    codigo: "PROD-003",
-    nombre: "Teclado mecánico",
-    categoria: "Accesorios",
-    stock: 0,
-    unidad: "Piezas",
-    ubicacion: "Almacén A",
-    estado: "Agotado",
-  },
-  {
-    id: "4",
-    codigo: "PROD-004",
-    nombre: "Monitor Samsung 27",
-    categoria: "Electrónica",
-    stock: 20,
-    unidad: "Piezas",
-    ubicacion: "Almacén C",
-    estado: "Disponible",
-  },
-  {
-    id: "5",
-    codigo: "PROD-005",
-    nombre: "Cable HDMI",
-    categoria: "Accesorios",
-    stock: 8,
-    unidad: "Piezas",
-    ubicacion: "Almacén B",
-    estado: "Disponible",
-  },
-];
+const formatDate = (value) => {
+  if (!value) return "";
+  return new Date(value).toLocaleString("es-MX", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
 
 // ======================================================
-// 3. CONFIGURACIÓN DE COLUMNAS
+// 2. CONFIGURACIÓN DE COLUMNAS
 // ======================================================
 
 const columnHelper = createColumnHelper();
@@ -176,22 +134,19 @@ const columns = columnHelper.columns([
     enableSorting: false,
   }),
 
-  // Código
-  columnHelper.accessor("codigo", {
+  columnHelper.accessor("code", {
     header: sortableHeader("Código"),
     sortingFn: "alphanumeric",
   }),
 
-
-  // Nombre
-  columnHelper.accessor("nombre", {
+  columnHelper.accessor("name", {
     header: sortableHeader("Producto"),
     sortingFn: "text",
+    filterFn: "includesString",
     cell: ({ row }) => {
-
       const datosAdaptados = {
         ...row.original,
-        header: row.original.nombre // ◄ Clonamos 'nombre' dentro de 'header'
+        header: row.original.name,
       };
 
       return <TableCellViewer item={datosAdaptados} />
@@ -199,55 +154,27 @@ const columns = columnHelper.columns([
     enableHiding: false,
   }),
 
-  // Categoría
-  columnHelper.accessor("categoria", {
-    header: sortableHeader("Categoría"),
-    sortingFn: "text",
-  }),
-
-  // Existencias
-  columnHelper.accessor("stock", {
-    header: sortableHeader("Existencias"),
+  columnHelper.accessor("cost", {
+    header: sortableHeader("Costo"),
     sortingFn: "alphanumeric",
-    cell: ({ row }) => (
-      <span className="font-medium">
-        {row.original.stock}
-      </span>
-    ),
+    cell: ({ getValue }) => formatMoney(getValue()),
   }),
 
-  // Unidad
-  columnHelper.accessor("unidad", {
-    header: "Unidad",
+  columnHelper.accessor("price", {
+    header: sortableHeader("Precio"),
+    sortingFn: "alphanumeric",
+    cell: ({ getValue }) => formatMoney(getValue()),
   }),
 
-  // Ubicación
-  columnHelper.accessor("ubicacion", {
-    header: "Ubicación",
+  columnHelper.accessor("id_odoo", {
+    header: sortableHeader("ID Odoo"),
+    sortingFn: "alphanumeric",
   }),
 
-  // Estado
-  columnHelper.accessor("estado", {
-    header: "Estado",
-
-    cell: ({ row }) => {
-      const estado = row.original.estado;
-
-      const estilos = {
-        "Disponible": "bg-green-100 text-green-700",
-        "Stock bajo": "bg-yellow-100 text-yellow-700",
-        "Agotado": "bg-red-100 text-red-700",
-      };
-
-      return (
-        <span
-          className={`rounded-full px-2 py-1 text-xs font-medium ${estilos[estado] || "bg-gray-100 text-gray-700"
-            }`}
-        >
-          {estado}
-        </span>
-      );
-    },
+  columnHelper.accessor("fecha_alta", {
+    header: sortableHeader("Alta"),
+    sortingFn: "alphanumeric",
+    cell: ({ getValue }) => formatDate(getValue()),
   }),
 ]);
 
@@ -256,24 +183,31 @@ const columns = columnHelper.columns([
 // ======================================================
 
 export default function RegistrarInventario() {
+  const { products, status, error } = useProducts();
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [rowSelection, setRowSelection] = React.useState({});
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
-  // Crear tabla
   const table = useTable({
     features,
-    data: datosInventario,
+    data: products,
     columns,
+    getRowId: (row) => String(row.id),
 
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
 
     state: {
       sorting,
       columnFilters,
       rowSelection,
+      pagination,
     },
   });
 
@@ -301,11 +235,11 @@ export default function RegistrarInventario() {
         <Input
           placeholder="Buscar producto..."
           value={
-            table.getColumn("nombre")?.getFilterValue() ?? ""
+            table.getColumn("name")?.getFilterValue() ?? ""
           }
           onChange={(event) =>
             table
-              .getColumn("nombre")
+              .getColumn("name")
               ?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
@@ -349,7 +283,25 @@ export default function RegistrarInventario() {
           {/* CONTENIDO */}
           <TableBody>
 
-            {table.getRowModel().rows.length > 0 ? (
+            {status === "loading" ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Cargando productos...
+                </TableCell>
+              </TableRow>
+            ) : status === "error" ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  {error}
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length > 0 ? (
 
               table.getRowModel().rows.map((row) => (
                 <TableRow
