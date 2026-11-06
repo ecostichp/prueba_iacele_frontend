@@ -76,7 +76,7 @@ export function LoginForm({ className, ...props }) {
 
   return (
     <>
-      <div className="absolute top-3 left-4 text-xs text-muted-foreground pointer-events-none">
+      <div className="fixed top-3 left-4 z-20 text-xs text-muted-foreground pointer-events-none">
         {serverMessage}
       </div>
       <div className={cn("flex flex-col gap-6", className)} {...props}>
