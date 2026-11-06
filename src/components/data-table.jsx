@@ -142,15 +142,13 @@ const columns = columnHelper.columns([
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected()
-              ? true
-              : table.getIsSomePageRowsSelected()
-                ? "indeterminate"
-                : false
+          checked={table.getIsAllPageRowsSelected()}
+          indeterminate={
+            table.getIsSomePageRowsSelected() &&
+            !table.getIsAllPageRowsSelected()
           }
           onCheckedChange={(value) => {
-            table.toggleAllPageRowsSelected(!!value)
+            table.toggleAllPageRowsSelected(value)
           }}
           aria-label="Select all rows"
         />
@@ -572,7 +570,7 @@ export function DataTable({ data: initialData = [] }) {
 
       {/* TABLE */}
 
-      <div className="overflow-hidden rounded-lg border mx-4 lg:mx-6">
+      <div className="mx-4 overflow-x-auto rounded-lg border lg:mx-6">
 
         <DndContext
           collisionDetection={closestCenter}

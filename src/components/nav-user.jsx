@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { EllipsisVerticalIcon, CircleUserRoundIcon, Settings2Icon, BellIcon, LogOutIcon } from "lucide-react"
+import { EllipsisVerticalIcon, Settings2Icon, LogOutIcon } from "lucide-react"
 import { useContext } from 'react'
 import { useNavigate } from "react-router";
 import { TokenContext, CurrentUserContext } from '../context/Context'
@@ -42,6 +42,7 @@ export function NavUser() {
 
   const user = useContext(CurrentUserContext)
   const avatarSrc = avatars[`../assets/avatars/${user.avatar}`]
+  const initial = (user.username || "?").slice(0, 1).toUpperCase()
 
   const { setToken } = useContext(TokenContext)
 
@@ -62,7 +63,7 @@ export function NavUser() {
           >
             <Avatar className="size-8 rounded-lg">
               <AvatarImage src={avatarSrc} alt={user.username} />
-              <AvatarFallback className="rounded-lg">{user.username[0]}</AvatarFallback>
+              <AvatarFallback className="rounded-lg">{initial}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.username}</span>
@@ -83,7 +84,7 @@ export function NavUser() {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="size-8">
                     <AvatarImage src={avatarSrc} alt={user.username} />
-                    <AvatarFallback className="rounded-lg">{user.username[0]}</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{initial}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user.username}</span>

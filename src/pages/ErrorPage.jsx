@@ -1,6 +1,7 @@
 import { useRouteError, Link } from "react-router";
 import miLogo from '@/assets/brand/Logo2021.png';
 import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
+import { Button } from "@/components/ui/button";
 
 export default function ErrorPage() {
 
@@ -24,25 +25,22 @@ export default function ErrorPage() {
         />
       </div>
 
-      <h2 className="my-12 text-5xl font-bold text-gray-900 dark:text-gray-50">
+      <h2 className="my-12 text-5xl font-bold text-foreground">
         ¡Ups!
       </h2>
 
-      <p className="text-gray-700 dark:text-gray-200">
+      <p className="text-muted-foreground">
         No encontramos la página que buscas
       </p>
 
-      <i className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+      <i className="mt-1 text-xs text-muted-foreground">
         {error.statusText || error.message}
       </i>
 
       <div className="mt-12">
-        <Link
-          to='/'
-          className="flex w-full justify-center rounded-md bg-indigo-600 dark:bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500"
-        >
+        <Button render={<Link to="/" />}>
           Sácame de aquí
-        </Link>
+        </Button>
       </div>
 
     </div>

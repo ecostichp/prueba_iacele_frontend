@@ -107,15 +107,13 @@ const columns = columnHelper.columns([
 
     header: ({ table }) => (
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected()
-            ? true
-            : table.getIsSomePageRowsSelected()
-              ? "indeterminate"
-              : false
+        checked={table.getIsAllPageRowsSelected()}
+        indeterminate={
+          table.getIsSomePageRowsSelected() &&
+          !table.getIsAllPageRowsSelected()
         }
         onCheckedChange={(value) =>
-          table.toggleAllPageRowsSelected(!!value)
+          table.toggleAllPageRowsSelected(value)
         }
         aria-label="Seleccionar todos"
       />
@@ -259,7 +257,7 @@ export default function RegistrarInventario() {
       </div>
 
       {/* TABLA */}
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-x-auto rounded-md border">
 
         <Table>
 

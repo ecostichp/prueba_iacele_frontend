@@ -28,7 +28,7 @@ const data = {
     },
     {
       title: "Mis registros de inventario",
-      url: "/inventory",
+      url: "/inventory_register",
       icon: (
         <NotebookPen />
       ),
@@ -97,12 +97,11 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="flex justify-center items-center data-[slot=sidebar-menu-button]:p-1.5! w-full"
+              render={<Link to="/" />}
+              className="flex w-full items-center justify-center data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <Link to="/">
-                <img src={miLogo} alt="La Casa Del Carpintero" className="dark:hidden block mx-auto w-auto h-9 object-contain" />
-                <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="hidden dark:block mx-auto w-auto h-9 object-contain" />
-              </Link>
+              <img src={miLogo} alt="La Casa Del Carpintero" className="mx-auto block h-9 w-auto object-contain dark:hidden" />
+              <img src={miLogoNegativo} alt="La Casa Del Carpintero" className="mx-auto hidden h-9 w-auto object-contain dark:block" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

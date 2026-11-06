@@ -80,7 +80,7 @@ export function LoginForm({ className, ...props }) {
             <form onSubmit={(e) => { e.preventDefault(); submitLogin(); }}>
               <FieldGroup className="space-y-4">
                 <Field>
-                  <FieldLabel htmlFor="username">Usuario</FieldLabel>
+                  <FieldLabel htmlFor="loginUser">Usuario</FieldLabel>
                   <Input
                     id="loginUser"
                     name="loginUser"
@@ -94,7 +94,7 @@ export function LoginForm({ className, ...props }) {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="password">
+                  <FieldLabel htmlFor="loginPassword">
                     Contraseña
                   </FieldLabel>
 
