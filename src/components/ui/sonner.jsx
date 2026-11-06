@@ -1,6 +1,6 @@
 "use client"
 
-import { useTheme } from "@/context/ThemeProvider"
+import { useTheme } from "@/context/theme"
 import { Toaster as Sonner } from "sonner";
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
@@ -15,7 +15,7 @@ const Toaster = ({
       className="toaster group"
       icons={{
         success: (
-          <CircleCheckIcon className="size-4" />
+          <CircleCheckIcon className="size-4 text-green-600" />
         ),
         info: (
           <InfoIcon className="size-4" />

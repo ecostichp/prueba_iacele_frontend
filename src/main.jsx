@@ -5,19 +5,16 @@ import './index.css'
 
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "@/components/ui/sonner"
-import { ThemeProvider } from "@/context/ThemeProvider"
-import AuthProvider from './context/AuthProvider'
-import AppProvider from './providers/AppProvider'
+import { ThemeProvider } from "@/context/theme"
+import { AuthProvider } from "@/context/auth"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="light" storageKey="themeIACeleApp">
+    <ThemeProvider>
       <TooltipProvider>
         <AuthProvider>
-          <AppProvider>
-            <App />
-            <Toaster />
-          </AppProvider>
+          <App />
+          <Toaster />
         </AuthProvider>
       </TooltipProvider>
     </ThemeProvider>

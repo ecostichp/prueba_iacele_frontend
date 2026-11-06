@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from "react-router";
 
 import {
   useTable,
@@ -32,10 +33,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import TableCellViewer from "@/components/table-cell-viewer"
+import CountDrawer from "@/components/CountDrawer"
 import { formatCaboDate } from "@/lib/datetime"
-import useProducts from "@/hooks/useProducts"
-import { MyCountsProvider, useMyCounts } from "@/context/MyCountsContext"
+import { useProducts } from "@/context/products"
+import { useCounts } from "@/context/counts"
 
 // ======================================================
 // 1. CONFIGURACIÓN DE TANSTACK TABLE V9
@@ -69,11 +70,12 @@ const formatDate = formatCaboDate;
 
 const columnHelper = createColumnHelper();
 
-const sortableHeader = (title) => {
+const sortableHeader = (title, align = "left") => {
   return ({ column }) => (
+    <div className={align === "right" ? "flex justify-end" : undefined}>
     <Button
       variant="ghost"
-      className="-ml-3"
+      className={align === "right" ? "-mr-3" : "-ml-3"}
       onClick={() =>
         column.toggleSorting(column.getIsSorted() === "asc")
       }
@@ -85,6 +87,7 @@ const sortableHeader = (title) => {
           ? " ↓"
           : " ↕"}
     </Button>
+    </div>
   );
 };
 
@@ -96,8 +99,8 @@ const formatQty = (value) => {
     : number.toLocaleString("es-MX", { maximumFractionDigits: 2 });
 };
 
-function CountedCell({ productId }) {
-  const { totals } = useMyCounts();
+function QuantityBadge({ productId }) {
+  const { totals } = useCounts();
   const total = Number(totals[productId] ?? 0);
 
   if (!Number.isFinite(total) || total <= 0) return null;
@@ -110,13 +113,21 @@ function CountedCell({ productId }) {
 }
 
 function ProductCell({ product }) {
-  const { lastCounts } = useMyCounts();
+  const { lastCounts, totals } = useCounts();
   const date = formatDate(lastCounts[product.id]);
+  const counted = Number(totals[product.id] ?? 0) > 0;
 
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <span className="block text-left whitespace-normal">{product.name}</span>
-      <div className="flex items-center justify-between gap-2 md:hidden">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="min-w-0 flex-1 text-left whitespace-normal">{product.name}</span>
+        {counted && (
+          <span className="shrink-0 md:hidden">
+            <QuantityBadge productId={product.id} />
+          </span>
+        )}
+      </div>
+      <div className="md:hidden">
         {date ? (
           <span className="text-xs text-muted-foreground">{date}</span>
         ) : (
@@ -124,8 +135,24 @@ function ProductCell({ product }) {
             No hay conteos registrados
           </span>
         )}
-        <CountedCell productId={product.id} />
       </div>
+    </div>
+  );
+}
+
+function DateCell({ productId, value }) {
+  const date = formatDate(value);
+
+  return (
+    <div className="flex items-center justify-end gap-3">
+      <QuantityBadge productId={productId} />
+      {date ? (
+        <span>{date}</span>
+      ) : (
+        <span className="text-[10px] font-normal leading-tight text-muted-foreground/50">
+          No hay conteos registrados
+        </span>
+      )}
     </div>
   );
 }
@@ -148,33 +175,14 @@ function createColumns(lastCounts) {
       meta: { className: "whitespace-normal" },
     }),
 
-    columnHelper.display({
-      id: "contado",
-      header: () => (
-        <span className="block text-xs font-medium leading-tight">
-          Cantidad
-          <br />
-          contada
-        </span>
-      ),
-      cell: ({ row }) => <CountedCell productId={row.original.id} />,
-      meta: { className: "hidden w-24 whitespace-normal px-2 md:table-cell" },
-    }),
-
     columnHelper.accessor((row) => lastCounts[row.id] || "", {
       id: "last_count",
-      header: sortableHeader("Fecha de creación"),
+      header: sortableHeader("Fecha", "right"),
       sortingFn: "alphanumeric",
-      cell: ({ getValue }) => {
-        const date = formatDate(getValue());
-        if (date) return date;
-        return (
-          <span className="text-[10px] font-normal leading-tight text-muted-foreground/50">
-            No hay conteos registrados
-          </span>
-        );
-      },
-      meta: { className: "hidden w-56 whitespace-nowrap md:table-cell" },
+      cell: ({ row, getValue }) => (
+        <DateCell productId={row.original.id} value={getValue()} />
+      ),
+      meta: { className: "hidden w-64 whitespace-nowrap text-right md:table-cell" },
     }),
   ]);
 }
@@ -183,17 +191,11 @@ function createColumns(lastCounts) {
 // 4. COMPONENTE PRINCIPAL
 // ======================================================
 
-export default function RegistrarInventario() {
-  return (
-    <MyCountsProvider>
-      <InventarioTable />
-    </MyCountsProvider>
-  );
-}
-
-function InventarioTable() {
+export default function RegisterInventory() {
   const { products, status, error } = useProducts();
-  const { totals, lastCounts } = useMyCounts();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedProductId = searchParams.get("producto");
+  const { totals, lastCounts } = useCounts();
   const [onlyCounted, setOnlyCounted] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -203,6 +205,15 @@ function InventarioTable() {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  React.useEffect(() => {
+    if (!requestedProductId || status !== "ready") return;
+    const product = products.find((item) => String(item.id) === requestedProductId);
+    if (!product) return;
+    setSelected(product);
+    setDrawerOpen(true);
+    setSearchParams({}, { replace: true });
+  }, [requestedProductId, products, status, setSearchParams]);
 
   const countedProducts = React.useMemo(
     () => products.filter((product) => Number(totals[product.id] ?? 0) > 0),
@@ -250,7 +261,7 @@ function InventarioTable() {
         </h1>
 
         <p className="text-sm text-muted-foreground">
-          Consulta y administra los productos registrados.
+          Consulta y administra los conteos registrados.
         </p>
       </div>
 
@@ -370,7 +381,7 @@ function InventarioTable() {
 
       </div>
         {selected && (
-          <TableCellViewer
+          <CountDrawer
             item={{ ...selected, header: selected.name }}
             open={drawerOpen}
             onOpenChange={setDrawerOpen}

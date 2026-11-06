@@ -1,6 +1,6 @@
 import { useRouteError, Link } from "react-router";
-import miLogo from '@/assets/brand/Logo2021.png';
-import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
+import logo from "@/assets/brand/Logo2021.png";
+import inverseLogo from "@/assets/brand/LogoNegativo2021.png";
 import { Button } from "@/components/ui/button";
 
 export default function ErrorPage() {
@@ -15,12 +15,12 @@ export default function ErrorPage() {
       <div className="dark:bg-neutral-900 rounded-lg p-4">
         <img
           className="mx-auto max-h-24 w-auto block dark:hidden"
-          src={miLogo}
+          src={logo}
           alt="La Casa Del Carpintero"
         />
         <img
           className="mx-auto max-h-24 w-auto hidden dark:block"
-          src={miLogoNegativo}
+          src={inverseLogo}
           alt="La Casa Del Carpintero"
         />
       </div>

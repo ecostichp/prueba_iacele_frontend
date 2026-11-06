@@ -1,28 +1,20 @@
-import { useContext } from "react";
-
 import { RouterProvider } from "react-router/dom";
 import { router } from "./router";
 
-import Login from "@/pages/login";
-import { TokenContext } from "./context/Context";
-
+import Login from "@/pages/Login";
+import { useAuth } from "@/context/auth";
+import { ProductsProvider } from "@/context/products";
 
 function App() {
+  const { token } = useAuth();
 
-  const { token } = useContext(TokenContext)
+  if (!token) return <Login />;
 
   return (
-    <>
-      {
-        !token ?
-          <>
-            <Login />
-          </>
-          :
-          <RouterProvider router={router} />
-      }
-    </>
-  )
+    <ProductsProvider>
+      <RouterProvider router={router} />
+    </ProductsProvider>
+  );
 }
 
-export default App
+export default App;

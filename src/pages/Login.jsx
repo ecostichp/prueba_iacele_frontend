@@ -1,6 +1,6 @@
-import miLogo from '@/assets/brand/Logo2021.png';
-import miLogoNegativo from '@/assets/brand/LogoNegativo2021.png';
-import { LoginForm } from "@/components/login-form";
+import logo from "@/assets/brand/Logo2021.png";
+import inverseLogo from "@/assets/brand/LogoNegativo2021.png";
+import { LoginForm } from "@/components/LoginForm";
 
 export default function Login() {
     return (
@@ -11,12 +11,12 @@ export default function Login() {
                 <div className="dark:bg-neutral-900 p-4 rounded-lg">
                     <img
                         className="dark:hidden block mx-auto w-auto max-h-24"
-                        src={miLogo}
+                        src={logo}
                         alt="La Casa Del Carpintero"
                     />
                     <img
                         className="hidden dark:block mx-auto w-auto max-h-24"
-                        src={miLogoNegativo}
+                        src={inverseLogo}
                         alt="La Casa Del Carpintero"
                     />
                 </div>

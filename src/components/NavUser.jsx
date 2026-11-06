@@ -19,10 +19,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { EllipsisVerticalIcon, Settings2Icon, LogOutIcon } from "lucide-react"
-import { useContext } from 'react'
-import { useNavigate } from "react-router";
-import { TokenContext, CurrentUserContext } from '../context/Context'
-import ToggleDarkModeMode from "../components/ToggleDarkMode";
+import { useAuth } from "@/context/auth";
+import ThemeToggle from "@/components/ThemeToggle";
 
 
 const avatars = import.meta.glob(
@@ -38,18 +36,12 @@ const avatars = import.meta.glob(
 export function NavUser() {
 
   const { isMobile } = useSidebar()
-  const navigate = useNavigate()
+  const { user, logout } = useAuth()
+  const avatarSrc = user?.avatar ? avatars[`../assets/avatars/${user.avatar}`] : undefined
+  const initial = (user?.username || "?").slice(0, 1).toUpperCase()
 
-  const user = useContext(CurrentUserContext)
-  const avatarSrc = avatars[`../assets/avatars/${user.avatar}`]
-  const initial = (user.username || "?").slice(0, 1).toUpperCase()
-
-  const { setToken } = useContext(TokenContext)
-
-  const handleLogout = (e) => {
-    navigate("/")
-    localStorage.removeItem("iaCeleAppToken")
-    setToken(null)
+  const handleLogout = () => {
+    logout()
   }
 
   return (
@@ -62,13 +54,13 @@ export function NavUser() {
             }
           >
             <Avatar className="size-8 rounded-lg">
-              <AvatarImage src={avatarSrc} alt={user.username} />
+              <AvatarImage src={avatarSrc} alt={user?.username || ""} />
               <AvatarFallback className="rounded-lg">{initial}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.username}</span>
+              <span className="truncate font-medium">{user?.username}</span>
               <span className="truncate text-xs text-foreground/70">
-                {user.tipo}
+                {user?.tipo}
               </span>
             </div>
             <EllipsisVerticalIcon className="ml-auto size-4" />
@@ -83,16 +75,16 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="size-8">
-                    <AvatarImage src={avatarSrc} alt={user.username} />
+                    <AvatarImage src={avatarSrc} alt={user?.username || ""} />
                     <AvatarFallback className="rounded-lg">{initial}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.username}</span>
+                    <span className="truncate font-medium">{user?.username}</span>
                     <span className="truncate text-xs text-muted-foreground">
-                      {user.tipo}
+                      {user?.tipo}
                     </span>
                   </div>
-                  <ToggleDarkModeMode />
+                  <ThemeToggle />
                 </div>
               </DropdownMenuLabel>
             </DropdownMenuGroup>

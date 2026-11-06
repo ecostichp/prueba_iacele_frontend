@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import MainLayout from "./layouts/MainLayout";
-import Dashboard from "./pages/dashboard";
 import ErrorPage from './pages/ErrorPage';
-import RegistrarInventario from "./pages/RegistrarInventario";
+import MyRecords from "./pages/MyRecords";
+import RegisterInventory from "./pages/RegisterInventory";
 
 export const router = createBrowserRouter([
   {
@@ -12,25 +12,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: <MyRecords />,
       },
       {
         path: '/inventory_register',
-        element: <RegistrarInventario />,
+        element: <RegisterInventory />,
       },
     ],
   },
-  // {
-  //   element: <DifLayOut />,
-  //   children: [
-  //     {
-  //       path: '/dif/algo',
-  //       element: <Algo />,
-  //     },
-  //     {
-  //       path: '/dif/otra',
-  //       element: <Algo />,
-  //     },
-  //   ],
-  // },
 ])

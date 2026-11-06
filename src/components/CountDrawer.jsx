@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Save, Trash2 } from "lucide-react";
+import { CircleCheckIcon, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+
+import ConfirmDelete from "@/components/ConfirmDelete";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,9 +26,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useIsMobile } from "@/hooks/use-mobile";
-import BACKEND_URL from "@/constants/values";
-import { useMyCounts } from "@/context/MyCountsContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { API_URL } from "@/constants/api";
+import { useCounts } from "@/context/counts";
 import { formatCaboDate } from "@/lib/datetime";
 
 const formatQty = (value) => {
@@ -42,9 +44,9 @@ const formatDate = (value) => formatCaboDate(value) || "—";
 const errorDetail = (error, fallback) =>
   error?.response?.data?.detail || fallback;
 
-export default function TableCellViewer({ item, open: openProp, onOpenChange }) {
+export default function CountDrawer({ item, open: openProp, onOpenChange }) {
   const isMobile = useIsMobile();
-  const { employeeId, teamId, refresh } = useMyCounts();
+  const { employeeId, teamId, refresh } = useCounts();
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
   const setOpen = onOpenChange ?? setOpenState;
@@ -54,6 +56,7 @@ export default function TableCellViewer({ item, open: openProp, onOpenChange }) 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmId, setConfirmId] = useState(null);
   const [formError, setFormError] = useState("");
 
   const title = item.name || item.header || "Producto";
@@ -71,7 +74,7 @@ export default function TableCellViewer({ item, open: openProp, onOpenChange }) 
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BACKEND_URL}inventory/individuals/id/${employeeId}/product/${item.id}`
+        `${API_URL}inventory/individuals/id/${employeeId}/product/${item.id}`
       );
       const payload = response.data?.[0];
       const rows = payload?.registers ?? [];
@@ -113,7 +116,7 @@ export default function TableCellViewer({ item, open: openProp, onOpenChange }) 
     setSaving(true);
     setFormError("");
     try {
-      await axios.post(`${BACKEND_URL}inventory/registers/new`, {
+      await axios.post(`${API_URL}inventory/registers/new`, {
         id_products: item.id,
         count_qty: count,
         assigned_team_id: teamId,
@@ -132,14 +135,18 @@ export default function TableCellViewer({ item, open: openProp, onOpenChange }) 
     }
   };
 
-  const deleteCount = async (registerId) => {
-    setDeletingId(registerId);
+  const deleteCount = async () => {
+    if (!confirmId) return;
+    setDeletingId(confirmId);
     setFormError("");
     try {
-      await axios.delete(`${BACKEND_URL}inventory/id/${registerId}`);
+      await axios.delete(`${API_URL}inventory/id/${confirmId}`);
       await loadRegisters();
       await refresh();
-      toast.success("Conteo eliminado");
+      setConfirmId(null);
+      toast.success("Conteo eliminado", {
+        icon: <CircleCheckIcon className="size-4 text-red-600" />,
+      });
     } catch (error) {
       setFormError(errorDetail(error, "No se pudo borrar el conteo."));
     } finally {
@@ -253,7 +260,7 @@ export default function TableCellViewer({ item, open: openProp, onOpenChange }) 
                             className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                             disabled={deletingId === register.id}
                             aria-label="Borrar conteo"
-                            onClick={() => deleteCount(register.id)}
+                            onClick={() => setConfirmId(register.id)}
                           >
                             <Trash2 />
                           </Button>
@@ -273,6 +280,14 @@ export default function TableCellViewer({ item, open: openProp, onOpenChange }) 
           </div>
         </div>
 
+        <ConfirmDelete
+          open={confirmId != null}
+          pending={deletingId != null}
+          onOpenChange={(next) => {
+            if (!next && deletingId == null) setConfirmId(null);
+          }}
+          onConfirm={deleteCount}
+        />
         <DrawerFooter>
           <DrawerClose render={<Button variant="outline" className="w-full" />}>
             Cerrar

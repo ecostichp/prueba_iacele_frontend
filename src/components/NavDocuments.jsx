@@ -17,9 +17,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { MoreHorizontalIcon, FolderIcon, ShareIcon, Trash2Icon } from "lucide-react"
-import { Link } from "react-router"
-
-
 export function NavDocuments({ items }) {
 
   const { isMobile } = useSidebar()
@@ -29,7 +26,11 @@ export function NavDocuments({ items }) {
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton render={<Link to={item.url} />}>
+            <SidebarMenuButton
+              render={<button type="button" />}
+              aria-disabled="true"
+              className="text-muted-foreground/35 hover:bg-transparent hover:text-muted-foreground/40 [&_svg]:text-muted-foreground/35"
+            >
               {item.icon}
               <span>{item.name}</span>
             </SidebarMenuButton>
@@ -38,7 +39,7 @@ export function NavDocuments({ items }) {
                 render={
                   <SidebarMenuAction
                     showOnHover
-                    className="aria-expanded:bg-muted"
+                    className="text-muted-foreground/35 aria-expanded:bg-muted [&_svg]:text-muted-foreground/35"
                   />
                 }
               >
