@@ -18,18 +18,43 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { EllipsisVerticalIcon, Settings2Icon, LogOutIcon } from "lucide-react"
 import { useAuth } from "@/context/auth";
 import ThemeToggle from "@/components/ThemeToggle";
 import { avatarUrl } from "@/lib/avatars";
+import { API_URL } from "@/constants/api";
 
 
 export function NavUser() {
 
   const { isMobile } = useSidebar()
   const { user, logout } = useAuth()
+  const [employee, setEmployee] = useState(null)
   const avatarSrc = avatarUrl(user?.avatar)
   const initial = (user?.username || "?").slice(0, 1).toUpperCase()
+  const jobTitle = employee?.job_title || user?.tipo
+  const employeeName = employee?.name || user?.tipo
+
+  useEffect(() => {
+    const employeeId = Number(user?.empleado_id) || null
+    if (!employeeId) {
+      setEmployee(null)
+      return undefined
+    }
+
+    let cancelled = false
+    axios.get(`${API_URL}employees/id/${employeeId}`).then((response) => {
+      if (!cancelled) setEmployee(response.data)
+    }).catch(() => {
+      if (!cancelled) setEmployee(null)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [user?.empleado_id])
 
   const handleLogout = () => {
     logout()
@@ -51,7 +76,7 @@ export function NavUser() {
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user?.username}</span>
               <span className="truncate text-xs text-foreground/70">
-                {user?.tipo}
+                {jobTitle}
               </span>
             </div>
             <EllipsisVerticalIcon className="ml-auto size-4" />
@@ -72,7 +97,7 @@ export function NavUser() {
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user?.username}</span>
                     <span className="truncate text-xs text-muted-foreground">
-                      {user?.tipo}
+                      {employeeName}
                     </span>
                   </div>
                   <ThemeToggle />
