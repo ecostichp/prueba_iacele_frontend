@@ -7,6 +7,7 @@ const pageTitles = {
   "/inventory_register": "Registrar inventario",
   "/database/inventory": "Base de datos",
   "/all_records": "Todos los registros",
+  "/metrics": "Métricas",
   "/coworkers": "Mis compañeros",
 }
 

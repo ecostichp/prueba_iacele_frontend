@@ -23,7 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ListXIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
+import { ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
 
 const navigation = {
   navMain: [
@@ -80,7 +80,7 @@ const navigation = {
     },
     {
       name: "Métricas",
-      url: "#",
+      url: "/metrics",
       icon: (
         <FileChartColumnIcon
         />
@@ -124,6 +124,30 @@ export function AppSidebar({
 
   const showManagers = canSeeManagerMenu(jobTitle);
   const showDatabase = canSeeDatabaseMenu(jobTitle);
+  const [loginOpen, setLoginOpen] = useState(true);
+
+  useEffect(() => {
+    if (!showDatabase) return undefined;
+
+    let cancelled = false;
+    const loadAccess = () => {
+      axios
+        .get(`${API_URL}authentication/access`)
+        .then((response) => {
+          if (!cancelled) setLoginOpen(response.data?.login_open !== false);
+        })
+        .catch(() => {});
+    };
+
+    loadAccess();
+    const intervalId = setInterval(loadAccess, 4000);
+    window.addEventListener("iacele-access", loadAccess);
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+      window.removeEventListener("iacele-access", loadAccess);
+    };
+  }, [showDatabase]);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -157,6 +181,16 @@ export function AppSidebar({
                 >
                   <Trash2Icon />
                   <span>Borrar inventario</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  render={<Link to="/database/access" />}
+                  isActive={pathname === "/database/access"}
+                  tooltip={loginOpen ? "Entrada abierta" : "Entrada cerrada"}
+                >
+                  {loginOpen ? <LockKeyholeOpenIcon /> : <LockKeyholeIcon />}
+                  <span>{loginOpen ? "Entrada abierta" : "Entrada cerrada"}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

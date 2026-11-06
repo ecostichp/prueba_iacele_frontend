@@ -43,10 +43,38 @@ export function AuthProvider({ children }) {
       })
       .catch((error) => {
         if (isAbort(error)) return;
-        logout();
+        if (error?.response?.status === 401) logout();
       });
 
-    return () => controller.abort();
+    const intervalId = setInterval(() => {
+      axios
+        .get(`${API_URL}authentication/user/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .catch((error) => {
+          if (isAbort(error)) return;
+          if (error?.response?.status === 401) logout();
+        });
+    }, 8000);
+
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      axios
+        .get(`${API_URL}authentication/user/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .catch((error) => {
+          if (isAbort(error)) return;
+          if (error?.response?.status === 401) logout();
+        });
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      controller.abort();
+      clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [token, logout]);
 
   const value = useMemo(

@@ -33,20 +33,37 @@ export function LoginForm({ className, ...props }) {
   const { login } = useAuth()
 
   const [errorMessage, setErrorMessage] = useState("")
+  const [entryClosed, setEntryClosed] = useState(false)
   const [serverMessage, setServerMessage] = useState("Resolviendo conexión con el servidor")
   useEffect(
     () => { checkServerConnection(setServerMessage) }, []
   )
+  useEffect(() => {
+    axios
+      .get(`${API_URL}authentication/access`)
+      .then((response) => setEntryClosed(response.data?.login_open === false))
+      .catch(() => setEntryClosed(false))
+  }, [])
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => { setPasswordVisible((current) => !current) };
 
 
-  const submitLogin = async () => {
+  const submitLogin = async (event) => {
+    const typedUser = event.currentTarget.elements.loginUser?.value ?? user
+    const username = typedUser.trim().toLocaleLowerCase("es-MX")
+    setUser(username)
 
     const endpoint = 'authentication/token'
     const config = { headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' } }
-    const requestBody = `grant_type=&username=${user}&password=${password}&scope=&client_id=&client_secret=`
+    const requestBody = new URLSearchParams({
+      grant_type: "",
+      username,
+      password,
+      scope: "",
+      client_id: "",
+      client_secret: "",
+    })
 
     try {
       const response = await axios.post(`${API_URL}${endpoint}`, requestBody, config)
@@ -73,10 +90,15 @@ export function LoginForm({ className, ...props }) {
             <CardDescription>
               Escribe tu usuario y contraseña
             </CardDescription>
+            {entryClosed && (
+              <p className="text-sm text-destructive">
+                La entrada está cerrada. El personal no puede iniciar sesión.
+              </p>
+            )}
           </CardHeader>
 
           <CardContent>
-            <form onSubmit={(e) => { e.preventDefault(); submitLogin(); }}>
+            <form onSubmit={(e) => { e.preventDefault(); submitLogin(e); }}>
               <FieldGroup className="space-y-4">
                 <Field>
                   <FieldLabel htmlFor="loginUser">Usuario</FieldLabel>
@@ -84,9 +106,9 @@ export function LoginForm({ className, ...props }) {
                     id="loginUser"
                     name="loginUser"
                     type="text"
-                    autoComplete="loginUser"
+                    autoComplete="username"
                     required
-                    onChange={(e) => setUser(e.target.value.toLocaleLowerCase())}
+                    onChange={(e) => setUser(e.target.value.trim().toLocaleLowerCase("es-MX"))}
                     value={user}
                     className="border-input bg-background text-foreground"
                   />

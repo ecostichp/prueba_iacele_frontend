@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatCaboDate } from "@/lib/datetime";
 import { API_URL } from "@/constants/api";
+import { useAuth } from "@/context/auth";
 import { useCounts } from "@/context/counts";
 
 const features = tableFeatures({
@@ -243,6 +244,7 @@ function CountHistory({ product, employeeId }) {
 }
 
 export default function MyRecords() {
+  const { user, token } = useAuth();
   const { employeeId, totals } = useCounts();
   const [rows, setRows] = React.useState([]);
   const [status, setStatus] = React.useState("loading");
@@ -257,6 +259,11 @@ export default function MyRecords() {
   });
 
   React.useEffect(() => {
+    if (!user) {
+      setRows([]);
+      setStatus(token ? "loading" : "ready");
+      return;
+    }
     if (!employeeId) {
       setRows([]);
       setStatus("ready");
@@ -291,7 +298,7 @@ export default function MyRecords() {
     return () => {
       cancelled = true;
     };
-  }, [employeeId, totals]);
+  }, [user, token, employeeId, totals]);
 
   const visibleRows = React.useMemo(() => {
     const query = search.trim().toLocaleLowerCase("es-MX");

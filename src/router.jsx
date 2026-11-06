@@ -4,7 +4,9 @@ import ErrorPage from './pages/ErrorPage';
 import MyRecords from "./pages/MyRecords";
 import RegisterInventory from "./pages/RegisterInventory";
 import ClearInventory from "./pages/ClearInventory";
+import CloseAccess from "./pages/CloseAccess";
 import AllRecords from "./pages/AllRecords";
+import Metrics from "./pages/Metrics";
 import Coworkers from "./pages/Coworkers";
 
 export const router = createBrowserRouter([
@@ -26,8 +28,16 @@ export const router = createBrowserRouter([
         element: <ClearInventory />,
       },
       {
+        path: '/database/access',
+        element: <CloseAccess />,
+      },
+      {
         path: '/all_records',
         element: <AllRecords />,
+      },
+      {
+        path: '/metrics',
+        element: <Metrics />,
       },
       {
         path: '/coworkers',

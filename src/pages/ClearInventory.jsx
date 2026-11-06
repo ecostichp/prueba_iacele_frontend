@@ -94,6 +94,9 @@ export default function ClearInventory() {
     }
   };
 
+  if (access === "loading") {
+    return <p className="p-6 text-sm text-muted-foreground">Cargando…</p>;
+  }
   if (access !== "allowed") return null;
 
   const countdownButtonLabel = phase === "countdown" ? String(seconds) : "Borrar ahora";
