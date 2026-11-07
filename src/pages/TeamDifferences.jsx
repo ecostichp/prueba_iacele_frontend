@@ -429,6 +429,7 @@ export default function TeamDifferences() {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
+    autoResetPageIndex: false,
     state: {
       sorting,
       columnFilters,

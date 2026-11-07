@@ -234,6 +234,7 @@ export default function RegisterInventory() {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
+    autoResetPageIndex: false,
 
     state: {
       sorting,

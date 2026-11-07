@@ -108,7 +108,6 @@ export default function StageCounts({ title, subtitle }) {
       return undefined;
     }
     let cancelled = false;
-    setStatus("loading");
     axios
       .get(`${API_URL}inventory/individuals/id/${assignedUserId}`)
       .then((response) => {

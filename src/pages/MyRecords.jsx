@@ -346,6 +346,7 @@ export default function MyRecords() {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
+    autoResetPageIndex: false,
     state: {
       sorting,
       columnFilters,
