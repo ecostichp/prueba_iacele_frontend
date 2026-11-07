@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { API_URL } from "@/constants/api";
 import { useAuth } from "@/context/auth";
 import { canSeeDatabaseMenu } from "@/lib/access";
-import { INVENTORY_STAGES, stageById } from "@/lib/stage";
+import { INVENTORY_STAGES, normalizeStage, stageById } from "@/lib/stage";
 import { cn } from "@/lib/utils";
 
 export default function InventoryStages() {
@@ -56,7 +56,7 @@ export default function InventoryStages() {
       .get(`${API_URL}inventory/stage`)
       .then((response) => {
         if (cancelled) return;
-        const stage = response.data?.stage || "individual";
+        const stage = normalizeStage(response.data?.stage || "individual");
         setCurrent(stage);
         setSelected(stage);
       })
@@ -77,7 +77,7 @@ export default function InventoryStages() {
         { stage: selected },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      const stage = response.data?.stage || selected;
+      const stage = normalizeStage(response.data?.stage || selected);
       setCurrent(stage);
       setSelected(stage);
       window.dispatchEvent(new CustomEvent("iacele-stage"));

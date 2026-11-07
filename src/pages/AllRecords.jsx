@@ -34,7 +34,8 @@ const columnHelper = createColumnHelper();
 
 const typeLabel = {
   individual: "Individual",
-  equipo: "Equipo",
+  equipo: "Diferencias",
+  diferencias: "Diferencias",
   doble: "Doble",
   gerente: "Gerente",
 };

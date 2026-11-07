@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { API_URL } from "@/constants/api";
 import { useAuth } from "@/context/auth";
+import { normalizeStage } from "@/lib/stage";
 
 const CountsContext = createContext(null);
 
@@ -109,7 +110,7 @@ export function CountsProvider({ children }) {
         .get(`${API_URL}inventory/stage`)
         .then((response) => {
           const next = response.data?.stage;
-          if (!cancelled && next) setStage(next);
+          if (!cancelled && next) setStage(normalizeStage(next));
         })
         .catch(() => {});
     };

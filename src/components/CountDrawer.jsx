@@ -70,7 +70,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
   const singleRecord = stage !== "individual";
   const alreadyCounted = singleRecord && registers.length > 0;
   const canDelete = (register) => {
-    if (register.count_type === "equipo") return true;
+    if (register.count_type === "diferencias" || register.count_type === "equipo") return true;
     return !teamCount && stage === "individual";
   };
 
@@ -142,7 +142,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
         assigned_team_id: teamId,
         assigned_user_id: assignedUserId,
         counting_user_id: employeeId,
-        count_type: teamCount ? "equipo" : (stage || "individual"),
+        count_type: teamCount ? "diferencias" : (stage || "individual"),
       });
       setQty("");
       await loadRegisters();
@@ -199,7 +199,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
           <DrawerTitle className="text-lg leading-snug">{title}</DrawerTitle>
           <DrawerDescription>
             {teamCount
-              ? `Código ${item.code || "—"}. Esta cantidad es del equipo: es distinta de lo que contó cada persona y se guarda como equipo.`
+              ? `Código ${item.code || "—"}. Esta cantidad es distinta de lo que contó cada persona y se guarda como diferencias.`
               : `Código ${item.code || "—"}. Registra la cantidad que contaste.`}
           </DrawerDescription>
         </DrawerHeader>
@@ -252,7 +252,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
                 <h3 className="text-sm font-medium">{teamCount ? "Total del equipo" : "Total contado"}</h3>
                 <p className="text-xs text-muted-foreground">
                   {teamCount
-                    ? "Suma de los conteos de equipo de este producto"
+                    ? "Suma de los conteos de diferencias de este producto"
                     : "Suma de tus conteos de este producto"}
                 </p>
               </div>
@@ -306,7 +306,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
                     <TableRow>
                       <TableCell colSpan={3} className="h-16 text-center">
                         {teamCount
-                          ? "Todavía no hay conteos de equipo de este producto."
+                          ? "Todavía no hay conteos de diferencias de este producto."
                           : "Todavía no tienes conteos de este producto."}
                       </TableCell>
                     </TableRow>

@@ -26,7 +26,7 @@ function buildRows(teams, employees, registers) {
   registers.forEach((register) => {
     const productId = Number(register.id_products);
     if (!productId) return;
-    if (register.count_type === "equipo") {
+    if (register.count_type === "diferencias" || register.count_type === "equipo") {
       const teamId = Number(register.assigned_team_id);
       if (!teamId) return;
       if (!writtenByTeam.has(teamId)) writtenByTeam.set(teamId, new Set());
@@ -148,7 +148,7 @@ export default function DifferenceMetrics() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Métricas diferencias</h1>
         <p className="text-sm text-muted-foreground">
-          Diferencias que tuvieron y cuántas de esas ya tienen conteo de equipo.
+          Diferencias que tuvieron y cuántas de esas ya tienen conteo de diferencias.
         </p>
       </div>
 

@@ -1,9 +1,15 @@
 export const STAGE_PATH = {
   individual: "/",
+  diferencias: "/team_differences",
   equipo: "/team_differences",
   doble: "/double_counts",
   gerente: "/manager_counts",
 };
+
+export function normalizeStage(stage) {
+  if (stage === "equipo") return "diferencias";
+  return stage || "individual";
+}
 
 export const INVENTORY_STAGES = [
   {
@@ -13,10 +19,10 @@ export const INVENTORY_STAGES = [
     confirm: "Los registros nuevos van a decir individual. Solo se podrá entrar a Mis registros de inventario, en azul o en verde según la asignación.",
   },
   {
-    id: "equipo",
+    id: "diferencias",
     label: "Diferencias en equipo",
-    detail: "Los registros nuevos quedan como equipo. Antes, cada persona vuelve a contar para sí misma. Mis registros de inventario y Asignados y Contadores quedan desactivados. Se abre Diferencias en equipo, en rojo. Esa vista sigue mostrando las diferencias de los conteos individuales. En el drawer solo se agregan y se borran los conteos de equipo.",
-    confirm: "Primero cada persona vuelve a contar para sí misma. Los conteos individuales se quedan. Los registros nuevos van a decir equipo y solo se podrá entrar a Diferencias en equipo, en rojo.",
+    detail: "Los registros nuevos quedan como diferencias. Antes, cada persona vuelve a contar para sí misma. Mis registros de inventario y Asignados y Contadores quedan desactivados. Se abre Diferencias en equipo, en rojo. Esa vista sigue mostrando las diferencias de los conteos individuales. En el drawer solo se agregan y se borran los conteos de diferencias.",
+    confirm: "Primero cada persona vuelve a contar para sí misma. Los conteos individuales se quedan. Los registros nuevos van a decir diferencias y solo se podrá entrar a Diferencias en equipo, en rojo.",
   },
   {
     id: "doble",
@@ -37,7 +43,7 @@ export function stageById(id) {
 }
 
 export function stageTone(stage) {
-  if (stage === "equipo") return "difference";
+  if (stage === "diferencias" || stage === "equipo") return "difference";
   if (stage === "doble" || stage === "gerente") return "mono";
   return "primary";
 }

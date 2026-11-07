@@ -294,7 +294,7 @@ function TeamRegisters({ teamId, productId, historyVersion, namesById }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={3} className="h-14 text-center">Todavía no hay conteos de equipo de este producto.</TableCell>
+              <TableCell colSpan={3} className="h-14 text-center">Todavía no hay conteos de diferencias de este producto.</TableCell>
             </TableRow>
           )}
         </TableBody>
@@ -442,7 +442,7 @@ export default function TeamDifferences() {
     : search.trim()
       ? "No se encontraron diferencias."
       : onlyMissingTeamCounts
-        ? "Todos los códigos ya tienen conteo de equipo."
+        ? "Todos los códigos ya tienen conteo de diferencias."
         : "No hay diferencias en este equipo.";
 
   return (
@@ -583,7 +583,7 @@ export default function TeamDifferences() {
               setPagination((current) => ({ ...current, pageIndex: 0 }));
             }}
           >
-            códigos sin conteo de equipo
+            códigos sin conteo de diferencias
             <span className="tabular-nums">{missingTeamRows.length}</span>
           </Button>
         </div>
