@@ -29,6 +29,7 @@ import {
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { API_URL } from "@/constants/api";
 import { useCounts } from "@/context/counts";
+import { stageTone } from "@/lib/stage";
 import { formatCaboDate } from "@/lib/datetime";
 
 const formatQty = (value) => {
@@ -44,9 +45,9 @@ const formatDate = (value) => formatCaboDate(value) || "—";
 const errorDetail = (error, fallback) =>
   error?.response?.data?.detail || fallback;
 
-export default function CountDrawer({ item, open: openProp, onOpenChange }) {
+export default function CountDrawer({ item, open: openProp, onOpenChange, onChanged, mode = "person" }) {
   const isMobile = useIsMobile();
-  const { employeeId, assignedUserId, teamId, refresh, helping } = useCounts();
+  const { employeeId, assignedUserId, teamId, refresh, helping, stage } = useCounts();
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
   const setOpen = onOpenChange ?? setOpenState;
@@ -65,8 +66,16 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
     0
   );
 
+  const teamCount = mode === "team";
+  const singleRecord = stage !== "individual";
+  const alreadyCounted = singleRecord && registers.length > 0;
+  const canDelete = (register) => {
+    if (register.count_type === "equipo") return true;
+    return !teamCount && stage === "individual";
+  };
+
   const loadRegisters = async () => {
-    if (!assignedUserId || !item?.id) {
+    if (!item?.id || (teamCount ? !teamId : !assignedUserId)) {
       setRegisters([]);
       return;
     }
@@ -74,7 +83,9 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${API_URL}inventory/individuals/id/${assignedUserId}/product/${item.id}`
+        teamCount
+          ? `${API_URL}inventory/teams/id/${teamId}/product/${item.id}`
+          : `${API_URL}inventory/individuals/id/${assignedUserId}/product/${item.id}`
       );
       const payload = response.data?.[0];
       const rows = payload?.registers ?? [];
@@ -94,7 +105,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
     if (!open) return;
     setFormError("");
     loadRegisters();
-  }, [open, assignedUserId, item?.id]);
+  }, [open, assignedUserId, teamId, item?.id, teamCount]);
 
   const saveCount = async (event) => {
     event.preventDefault();
@@ -112,6 +123,10 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
       setFormError("Escribe una cantidad mayor que cero.");
       return;
     }
+    if (singleRecord && registers.length > 0) {
+      setFormError("En esta etapa solo se permite un registro por código.");
+      return;
+    }
 
     setSaving(true);
     setFormError("");
@@ -122,11 +137,12 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
         assigned_team_id: teamId,
         assigned_user_id: assignedUserId,
         counting_user_id: employeeId,
-        count_type: "individual",
+        count_type: teamCount ? "equipo" : (stage || "individual"),
       });
       setQty("");
       await loadRegisters();
       await refresh();
+      onChanged?.();
       toast.success("Conteo guardado");
     } catch (error) {
       setFormError(errorDetail(error, "No se pudo guardar el conteo."));
@@ -143,6 +159,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
       await axios.delete(`${API_URL}inventory/id/${confirmId}`);
       await loadRegisters();
       await refresh();
+      onChanged?.();
       setConfirmId(null);
       toast.success("Conteo eliminado", {
         icon: <CircleCheckIcon className="size-4 text-red-600" />,
@@ -176,7 +193,9 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
         <DrawerHeader className="text-left">
           <DrawerTitle className="text-lg leading-snug">{title}</DrawerTitle>
           <DrawerDescription>
-            Código {item.code || "—"}. Registra la cantidad que contaste.
+            {teamCount
+              ? `Código ${item.code || "—"}. Esta cantidad es del equipo: es distinta de lo que contó cada persona y se guarda como equipo.`
+              : `Código ${item.code || "—"}. Registra la cantidad que contaste.`}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -199,13 +218,19 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
                 type="submit"
                 size="icon-lg"
                 className="size-12 shrink-0 rounded-full"
-                data-helping={helping ? "true" : undefined}
-                disabled={saving || !employeeId}
+                data-helping={stage === "individual" && helping ? "true" : undefined}
+                data-tone={stageTone(stage) === "primary" ? undefined : stageTone(stage)}
+                disabled={saving || !employeeId || alreadyCounted}
                 aria-label="Guardar conteo"
               >
                 <Save />
               </Button>
             </div>
+            {alreadyCounted && (
+              <p className="text-sm text-muted-foreground">
+                En esta etapa solo se permite un registro por código. Borra el conteo si quieres cambiarlo.
+              </p>
+            )}
             {!employeeId && (
               <p className="text-sm text-muted-foreground">
                 Tu cuenta no está ligada a un empleado, así que no puede guardar conteos.
@@ -219,9 +244,11 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between gap-3 rounded-2xl border bg-muted/40 px-4 py-3">
               <div>
-                <h3 className="text-sm font-medium">Total contado</h3>
+                <h3 className="text-sm font-medium">{teamCount ? "Total del equipo" : "Total contado"}</h3>
                 <p className="text-xs text-muted-foreground">
-                  Suma de tus conteos de este producto
+                  {teamCount
+                    ? "Suma de los conteos de equipo de este producto"
+                    : "Suma de tus conteos de este producto"}
                 </p>
               </div>
               <p className="text-3xl font-semibold tabular-nums tracking-tight">
@@ -254,24 +281,28 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
                         </TableCell>
                         <TableCell>{formatDate(register.date_create)}</TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            disabled={deletingId === register.id}
-                            aria-label="Borrar conteo"
-                            onClick={() => setConfirmId(register.id)}
-                          >
-                            <Trash2 />
-                          </Button>
+                          {canDelete(register) && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              disabled={deletingId === register.id}
+                              aria-label="Borrar conteo"
+                              onClick={() => setConfirmId(register.id)}
+                            >
+                              <Trash2 />
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
                       <TableCell colSpan={3} className="h-16 text-center">
-                        Todavía no tienes conteos de este producto.
+                        {teamCount
+                          ? "Todavía no hay conteos de equipo de este producto."
+                          : "Todavía no tienes conteos de este producto."}
                       </TableCell>
                     </TableRow>
                   )}

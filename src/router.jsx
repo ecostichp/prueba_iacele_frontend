@@ -10,6 +10,9 @@ import Metrics from "./pages/Metrics";
 import Coworkers from "./pages/Coworkers";
 import Teams from "./pages/Teams";
 import AllTeams from "./pages/AllTeams";
+import TeamDifferences from "./pages/TeamDifferences";
+import InventoryStages from "./pages/InventoryStages";
+import StageCounts from "./pages/StageCounts";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +37,10 @@ export const router = createBrowserRouter([
         element: <CloseAccess />,
       },
       {
+        path: '/database/stages',
+        element: <InventoryStages />,
+      },
+      {
         path: '/all_records',
         element: <AllRecords />,
       },
@@ -52,6 +59,28 @@ export const router = createBrowserRouter([
       {
         path: '/all_teams',
         element: <AllTeams />,
+      },
+      {
+        path: '/team_differences',
+        element: <TeamDifferences />,
+      },
+      {
+        path: '/double_counts',
+        element: (
+          <StageCounts
+            title="Conteos dobles"
+            subtitle="Códigos contados en la etapa doble."
+          />
+        ),
+      },
+      {
+        path: '/manager_counts',
+        element: (
+          <StageCounts
+            title="Conteos gerentes"
+            subtitle="Códigos contados en la etapa de gerente."
+          />
+        ),
       },
     ],
   },

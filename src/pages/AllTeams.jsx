@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { API_URL } from "@/constants/api";
+import { useCounts } from "@/context/counts";
 import { avatarUrl } from "@/lib/avatars";
 
 function initial(name) {
@@ -28,7 +29,7 @@ function countSplits(registers, homeTeam) {
   };
 
   registers.forEach((register) => {
-    if (register.count_type !== "individual") return;
+    if (register.count_type !== stage) return;
     const personId = Number(register.counting_user_id);
     const productId = Number(register.id_products);
     const teamId = Number(register.assigned_team_id);
@@ -42,6 +43,7 @@ function countSplits(registers, homeTeam) {
 }
 
 export default function AllTeams() {
+  const { stage } = useCounts();
   const [rows, setRows] = useState([]);
   const [status, setStatus] = useState("loading");
 
@@ -65,7 +67,7 @@ export default function AllTeams() {
           if (team.empleado_id_a) homeTeam.set(Number(team.empleado_id_a), Number(team.id));
           if (team.empleado_id_b) homeTeam.set(Number(team.empleado_id_b), Number(team.id));
         });
-        const splits = countSplits(registersResponse.data, homeTeam);
+        const splits = countSplits(registersResponse.data, homeTeam, stage);
         const size = (bucket, employeeId) => bucket.get(employeeId)?.size || 0;
         const people = new Map(
           employeesResponse.data.map((employee) => [
@@ -97,7 +99,7 @@ export default function AllTeams() {
       });
 
     return () => controller.abort();
-  }, []);
+  }, [stage]);
 
   return (
     <div className="w-full space-y-4 p-4 sm:space-y-6 sm:p-6">

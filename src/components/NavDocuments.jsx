@@ -27,7 +27,8 @@ export function NavDocuments({ items }) {
       <SidebarGroupLabel>Gerentes</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          const pending = !item.url || item.url === "#";
+          const placeholder = !item.url || item.url === "#";
+          const pending = item.disabled || placeholder;
           return (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton
@@ -39,7 +40,7 @@ export function NavDocuments({ items }) {
               {item.icon}
               <span>{item.name}</span>
             </SidebarMenuButton>
-            {pending && <DropdownMenu>
+            {placeholder && <DropdownMenu>
               <DropdownMenuTrigger
                 render={
                   <SidebarMenuAction

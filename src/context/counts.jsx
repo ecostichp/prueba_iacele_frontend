@@ -16,6 +16,7 @@ export function CountsProvider({ children }) {
   const [teamId, setTeamId] = useState(null);
   const [selfName, setSelfName] = useState("");
   const [assignedName, setAssignedName] = useState("");
+  const [stage, setStage] = useState("individual");
 
   const refresh = useCallback(async () => {
     if (!assignedUserId) {
@@ -101,6 +102,28 @@ export function CountsProvider({ children }) {
     return () => controller.abort();
   }, [employeeId, assignedUserId]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const loadStage = () => {
+      axios
+        .get(`${API_URL}inventory/stage`)
+        .then((response) => {
+          const next = response.data?.stage;
+          if (!cancelled && next) setStage(next);
+        })
+        .catch(() => {});
+    };
+
+    loadStage();
+    const intervalId = setInterval(loadStage, 4000);
+    window.addEventListener("iacele-stage", loadStage);
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+      window.removeEventListener("iacele-stage", loadStage);
+    };
+  }, []);
+
   const value = useMemo(
     () => ({
       totals,
@@ -111,9 +134,10 @@ export function CountsProvider({ children }) {
       selfName,
       assignedName,
       teamId,
+      stage,
       refresh,
     }),
-    [totals, lastCounts, employeeId, assignedUserId, helping, selfName, assignedName, teamId, refresh]
+    [totals, lastCounts, employeeId, assignedUserId, helping, selfName, assignedName, teamId, stage, refresh]
   );
 
   return <CountsContext.Provider value={value}>{children}</CountsContext.Provider>;

@@ -23,7 +23,7 @@ export function NavSecondary({ items, label, ...props }) {
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const pending = !item.url || item.url === "#";
+            const pending = item.disabled || !item.url || item.url === "#";
             return (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton

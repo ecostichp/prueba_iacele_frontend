@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { API_URL } from "@/constants/api";
 import { useAuth } from "@/context/auth";
+import { useCounts } from "@/context/counts";
 import { canSeeManagerMenu } from "@/lib/access";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +65,7 @@ function teamMetrics(qtyA, qtyB) {
   };
 }
 
-function buildRows(teams, employees, registers) {
+function buildRows(teams, employees, registers, stage) {
   const counted = new Map();
   registers.forEach((register) => {
     if (register.count_type !== "individual") return;
@@ -111,6 +112,7 @@ function buildRows(teams, employees, registers) {
 
 export default function Metrics() {
   const { user } = useAuth();
+  const { stage } = useCounts();
   const navigate = useNavigate();
   const [access, setAccess] = useState("loading");
   const [status, setStatus] = useState("loading");
@@ -156,7 +158,7 @@ export default function Metrics() {
         const employees = new Map(
           employeesResponse.data.map((employee) => [employee.id, employee.name])
         );
-        setRows(buildRows(teamsResponse.data, employees, registersResponse.data));
+        setRows(buildRows(teamsResponse.data, employees, registersResponse.data, stage));
         setStatus("ready");
       })
       .catch((error) => {
@@ -164,7 +166,7 @@ export default function Metrics() {
         setStatus("error");
       });
     return () => controller.abort();
-  }, [access]);
+  }, [access, stage]);
 
   if (access !== "allowed") return null;
 

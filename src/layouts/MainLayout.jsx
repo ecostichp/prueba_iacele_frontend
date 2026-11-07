@@ -1,13 +1,35 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { CountsProvider } from "@/context/counts";
-import { Outlet } from "react-router";
+import { CountsProvider, useCounts } from "@/context/counts";
+import { STAGE_PATH } from "@/lib/stage";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+
+const stagePages = new Set(Object.values(STAGE_PATH));
+
+function StageGate() {
+    const { stage } = useCounts();
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const home = STAGE_PATH[stage] || "/";
+        if (stagePages.has(pathname) && pathname !== home) {
+            navigate(home, { replace: true });
+        } else if (stage !== "individual" && pathname === "/teams") {
+            navigate(home, { replace: true });
+        }
+    }, [stage, pathname, navigate]);
+
+    return null;
+}
 
 export default function MainLayout() {
 
     return (
         <CountsProvider>
+        <StageGate />
         <SidebarProvider
             style={{
                 "--sidebar-width": "calc(var(--spacing) * 72)",

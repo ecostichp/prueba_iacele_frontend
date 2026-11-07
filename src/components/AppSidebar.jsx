@@ -24,7 +24,31 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ArrowRightLeftIcon, ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
+import { ArrowUpNarrowWideIcon, ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
+import { STAGE_PATH } from "@/lib/stage";
+
+function UserExclamationPointIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="lucide lucide-user-exclamation-point"
+    >
+      <path d="M15 15H9a4 4 0 00-4 4v2" />
+      <path d="M18.988 13v4" />
+      <path d="M18.988 21h.01" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
 
 const navigation = {
   navMain: [
@@ -37,7 +61,7 @@ const navigation = {
     },
     {
       title: "Diferencias en equipo",
-      url: "#",
+      url: "/team_differences",
       icon: (
         <ListXIcon
         />
@@ -45,22 +69,21 @@ const navigation = {
     },
     {
       title: "Conteos dobles",
-      url: "#",
+      url: "/double_counts",
       icon: (
         <Layers2Icon
         />
       ),
     },
-  ],
-  navSecondary: [
     {
-      title: "Mi equipo",
-      url: "#",
+      title: "Conteos gerentes",
+      url: "/manager_counts",
       icon: (
-        <UsersIcon
-        />
+        <UserExclamationPointIcon />
       ),
     },
+  ],
+  navSecondary: [
     {
       title: "Mis compañeros",
       url: "/coworkers",
@@ -73,7 +96,7 @@ const navigation = {
       title: "Todos los equipos",
       url: "/all_teams",
       icon: (
-        <UsersRoundCollaborationIcon
+        <UsersIcon
         />
       ),
     },
@@ -99,7 +122,7 @@ const navigation = {
       name: "Asignados y Contadores",
       url: "/teams",
       icon: (
-        <ArrowRightLeftIcon
+        <UsersRoundCollaborationIcon
         />
       ),
     },
@@ -110,7 +133,7 @@ export function AppSidebar({
 }) {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  const { helping, assignedName } = useCounts();
+  const { helping, assignedName, stage } = useCounts();
   const [jobTitle, setJobTitle] = useState("");
 
   useEffect(() => {
@@ -160,11 +183,17 @@ export function AppSidebar({
   }, [showDatabase]);
 
   const assignedLabel = (assignedName || "").trim().split(/\s+/)[0];
-  const inventoryItems = navigation.navMain.map((item) =>
-    item.url === "/" && helping && assignedLabel
-      ? { ...item, title: `Registros de ${assignedLabel}` }
-      : item
-  );
+  const inventoryItems = navigation.navMain.map((item) => {
+    let next = item;
+    if (item.url === "/" && helping && assignedLabel) {
+      next = { ...next, title: `Registros de ${assignedLabel}` };
+    }
+    const activeUrl = STAGE_PATH[stage] || "/";
+    if (Object.values(STAGE_PATH).includes(item.url) && item.url !== activeUrl) {
+      next = { ...next, disabled: true };
+    }
+    return next;
+  });
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -185,7 +214,15 @@ export function AppSidebar({
         <NavMain />
         <NavSecondary label="Inventario" items={inventoryItems} />
         <NavSecondary label="Personas" items={navigation.navSecondary} />
-        {showManagers && <NavDocuments items={navigation.managers} />}
+        {showManagers && (
+          <NavDocuments
+            items={navigation.managers.map((item) => (
+              item.url === "/teams" && stage !== "individual"
+                ? { ...item, disabled: true }
+                : item
+            ))}
+          />
+        )}
         {showDatabase && (
           <SidebarGroup className="mt-auto group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Base de datos</SidebarGroupLabel>
@@ -198,6 +235,16 @@ export function AppSidebar({
                 >
                   <Trash2Icon />
                   <span>Borrar inventario</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  render={<Link to="/database/stages" />}
+                  isActive={pathname === "/database/stages"}
+                  tooltip="Etapas inventario"
+                >
+                  <ArrowUpNarrowWideIcon />
+                  <span>Etapas inventario</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
