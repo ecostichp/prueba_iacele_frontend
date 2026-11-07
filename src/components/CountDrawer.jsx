@@ -109,7 +109,8 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
 
   const saveCount = async (event) => {
     event.preventDefault();
-    const count = Number(qty);
+    const written = String(qty).trim();
+    const count = Number(written);
 
     if (!employeeId) {
       setFormError("Tu cuenta no está ligada a un empleado.");
@@ -119,8 +120,12 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
       setFormError("La persona a la que se acredita el conteo no tiene equipo.");
       return;
     }
-    if (!Number.isFinite(count) || count <= 0) {
-      setFormError("Escribe una cantidad mayor que cero.");
+    if (written === "" || !Number.isFinite(count) || count < 0) {
+      setFormError("Escribe una cantidad de cero o mayor.");
+      return;
+    }
+    if (count === 0 && stage === "individual") {
+      setFormError("En la etapa individual no se guarda cero. Borra el registro.");
       return;
     }
     if (singleRecord && registers.length > 0) {

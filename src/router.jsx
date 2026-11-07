@@ -7,6 +7,7 @@ import ClearInventory from "./pages/ClearInventory";
 import CloseAccess from "./pages/CloseAccess";
 import AllRecords from "./pages/AllRecords";
 import Metrics from "./pages/Metrics";
+import DifferenceMetrics from "./pages/DifferenceMetrics";
 import Coworkers from "./pages/Coworkers";
 import Teams from "./pages/Teams";
 import AllTeams from "./pages/AllTeams";
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: '/metrics',
         element: <Metrics />,
+      },
+      {
+        path: '/metrics_differences',
+        element: <DifferenceMetrics />,
       },
       {
         path: '/coworkers',

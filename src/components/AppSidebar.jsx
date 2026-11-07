@@ -24,7 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ArrowUpNarrowWideIcon, ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
+import { ArrowUpNarrowWideIcon, ChartColumnIcon, ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
 import { STAGE_PATH } from "@/lib/stage";
 
 function UserExclamationPointIcon() {
@@ -111,10 +111,18 @@ const navigation = {
       ),
     },
     {
-      name: "Métricas",
+      name: "Métricas individuales",
       url: "/metrics",
       icon: (
         <FileChartColumnIcon
+        />
+      ),
+    },
+    {
+      name: "Métricas diferencias",
+      url: "/metrics_differences",
+      icon: (
+        <ChartColumnIcon
         />
       ),
     },

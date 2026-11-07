@@ -60,8 +60,6 @@ function teamMetrics(qtyA, qtyB) {
     average,
     imbalance: highest === 0 ? 0 : 1 - lowest / highest,
     gap,
-    gapFloor: Math.max(gap, 1),
-    gapShare: average === 0 ? 0 : gap / average,
   };
 }
 
@@ -80,15 +78,8 @@ function buildRows(teams, employees, registers, stage) {
     .map((team) => {
       const personA = Number(team.empleado_id_a);
       const personB = Number(team.empleado_id_b);
-      const codesA = counted.get(personA) || new Set();
-      const codesB = counted.get(personB) || new Set();
-      const productIds = new Set([...codesA, ...codesB]);
-      let codes = 0;
-      productIds.forEach((productId) => {
-        if (codesA.has(productId) !== codesB.has(productId)) codes += 1;
-      });
-      const qtyA = codesA.size;
-      const qtyB = codesB.size;
+      const qtyA = (counted.get(personA) || new Set()).size;
+      const qtyB = (counted.get(personB) || new Set()).size;
       const nameA = employees.get(personA) || "Sin asignar";
       const nameB = employees.get(personB) || "Sin asignar";
       return {
@@ -99,7 +90,6 @@ function buildRows(teams, employees, registers, stage) {
         shortB: firstName(nameB),
         qtyA,
         qtyB,
-        codes,
         ...teamMetrics(qtyA, qtyB),
       };
     })
@@ -176,7 +166,7 @@ export default function Metrics() {
   return (
     <div className="w-full space-y-4 p-4 sm:space-y-6 sm:p-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Métricas</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Métricas individuales</h1>
         <p className="text-sm text-muted-foreground">
           El conteo es cuántos códigos distintos contó cada quien. El desbalance se pone rojo desde 30%.
         </p>
@@ -205,17 +195,14 @@ export default function Metrics() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Eq</TableHead>
+                  <TableHead>Equipo</TableHead>
                   <TableHead>A</TableHead>
                   <TableHead className="text-right">Conteo</TableHead>
                   <TableHead>B</TableHead>
                   <TableHead className="text-right">Conteo</TableHead>
-                  <TableHead className="text-right">PromEq</TableHead>
+                  <TableHead className="text-right">Promedio</TableHead>
+                  <TableHead className="text-right">Diferencia</TableHead>
                   <TableHead className="text-right">Desbalance</TableHead>
-                  <TableHead className="text-right">Diff</TableHead>
-                  <TableHead className="text-right">Diff alt.</TableHead>
-                  <TableHead className="text-right">%Diff</TableHead>
-                  <TableHead className="text-right">Códigos</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -229,13 +216,10 @@ export default function Metrics() {
                       <TableCell title={row.nameB} className={behind === "b" ? "font-medium text-destructive" : undefined}>{row.shortB}</TableCell>
                       <TableCell className={cn("text-right tabular-nums", behind === "b" && "font-medium text-destructive")}>{formatPieces(row.qtyB)}</TableCell>
                       <TableCell className="text-right tabular-nums">{formatAverage(row.average)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{formatPieces(row.gap)}</TableCell>
                       <TableCell className="text-right">
                         <DesbalanceBadge value={row.imbalance} />
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">{formatPieces(row.gap)}</TableCell>
-                      <TableCell className="text-right tabular-nums">{formatPieces(row.gapFloor)}</TableCell>
-                      <TableCell className="text-right tabular-nums">{formatPercent(row.gapShare)}</TableCell>
-                      <TableCell className="text-right tabular-nums">{row.codes.toLocaleString("es-MX")}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -247,17 +231,8 @@ export default function Metrics() {
                       {rows.length.toLocaleString("es-MX")} equipos
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{formatAverage(shownAverage)}</TableCell>
-                    <TableCell />
                     <TableCell className="text-right tabular-nums">{formatPieces(shownGap)}</TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {formatPieces(rows.reduce((total, row) => total + row.gapFloor, 0))}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {formatPercent(shownAverage === 0 ? 0 : shownGap / shownAverage)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {rows.reduce((total, row) => total + row.codes, 0).toLocaleString("es-MX")}
-                    </TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableFooter>
               )}
