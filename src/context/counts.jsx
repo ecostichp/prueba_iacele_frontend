@@ -9,19 +9,23 @@ const CountsContext = createContext(null);
 export function CountsProvider({ children }) {
   const { user } = useAuth();
   const employeeId = Number(user?.empleado_id) || null;
+  const assignedUserId = Number(user?.assigned_user_id) || employeeId;
+  const helping = Boolean(employeeId && assignedUserId && employeeId !== assignedUserId);
   const [totals, setTotals] = useState({});
   const [lastCounts, setLastCounts] = useState({});
   const [teamId, setTeamId] = useState(null);
+  const [selfName, setSelfName] = useState("");
+  const [assignedName, setAssignedName] = useState("");
 
   const refresh = useCallback(async () => {
-    if (!employeeId) {
+    if (!assignedUserId) {
       setTotals({});
       setLastCounts({});
       return;
     }
 
     const response = await axios.get(
-      `${API_URL}inventory/individuals/id/${employeeId}`
+      `${API_URL}inventory/individuals/id/${assignedUserId}`
     );
     const nextTotals = {};
     const nextDates = {};
@@ -31,7 +35,7 @@ export function CountsProvider({ children }) {
     }
     setTotals(nextTotals);
     setLastCounts(nextDates);
-  }, [employeeId]);
+  }, [assignedUserId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,7 +52,7 @@ export function CountsProvider({ children }) {
   }, [refresh]);
 
   useEffect(() => {
-    if (!employeeId) {
+    if (!assignedUserId) {
       setTeamId(null);
       return;
     }
@@ -60,8 +64,8 @@ export function CountsProvider({ children }) {
       .then((response) => {
         const team = response.data.find(
           (item) =>
-            item.empleado_id_a === employeeId ||
-            item.empleado_id_b === employeeId
+            Number(item.empleado_id_a) === assignedUserId ||
+            Number(item.empleado_id_b) === assignedUserId
         );
         setTeamId(team?.id ?? null);
       })
@@ -71,11 +75,45 @@ export function CountsProvider({ children }) {
       });
 
     return () => controller.abort();
-  }, [employeeId]);
+  }, [assignedUserId]);
+
+  useEffect(() => {
+    if (!employeeId) {
+      setSelfName("");
+      setAssignedName("");
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    const ids = [...new Set([employeeId, assignedUserId].filter(Boolean))];
+    Promise.all(
+      ids.map((id) => axios.get(`${API_URL}employees/id/${id}`, { signal: controller.signal }))
+    )
+      .then((responses) => {
+        const names = new Map(responses.map((response) => [Number(response.data.id), response.data.name]));
+        setSelfName(names.get(employeeId) || "");
+        setAssignedName(names.get(assignedUserId) || "");
+      })
+      .catch((error) => {
+        if (error?.code === "ERR_CANCELED") return;
+      });
+
+    return () => controller.abort();
+  }, [employeeId, assignedUserId]);
 
   const value = useMemo(
-    () => ({ totals, lastCounts, employeeId, teamId, refresh }),
-    [totals, lastCounts, employeeId, teamId, refresh]
+    () => ({
+      totals,
+      lastCounts,
+      employeeId,
+      assignedUserId,
+      helping,
+      selfName,
+      assignedName,
+      teamId,
+      refresh,
+    }),
+    [totals, lastCounts, employeeId, assignedUserId, helping, selfName, assignedName, teamId, refresh]
   );
 
   return <CountsContext.Provider value={value}>{children}</CountsContext.Provider>;

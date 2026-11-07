@@ -92,7 +92,6 @@ function buildRows(teams, employees, registers) {
       const nameB = employees.get(personB) || "Sin asignar";
       return {
         id: team.id,
-        label: String(team.id).padStart(2, "0"),
         nameA,
         nameB,
         shortA: firstName(nameA),
@@ -103,7 +102,11 @@ function buildRows(teams, employees, registers) {
         ...teamMetrics(qtyA, qtyB),
       };
     })
-    .sort((left, right) => left.id - right.id);
+    .sort((left, right) => left.id - right.id)
+    .map((row, index) => ({
+      ...row,
+      label: String(index + 1).padStart(2, "0"),
+    }));
 }
 
 export default function Metrics() {

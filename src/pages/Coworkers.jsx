@@ -73,7 +73,7 @@ export default function Coworkers() {
     <div className="w-full space-y-4 p-4 sm:space-y-6 sm:p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Mis compañeros</h1>
-        <p className="text-sm text-muted-foreground">Los empleados registrados.</p>
+        <p className="text-sm text-muted-foreground">Los empleados asignados a este inventario.</p>
       </div>
 
       <Input

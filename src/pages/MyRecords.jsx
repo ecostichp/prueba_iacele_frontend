@@ -37,6 +37,17 @@ import { API_URL } from "@/constants/api";
 import { useAuth } from "@/context/auth";
 import { useCounts } from "@/context/counts";
 
+function capitalize(value) {
+  const text = (value || "").trim();
+  if (!text) return "";
+  return text.charAt(0).toLocaleUpperCase("es-MX") + text.slice(1);
+}
+
+function firstWord(value) {
+  const text = (value || "").trim();
+  return text ? text.split(/\s+/)[0] : "";
+}
+
 const features = tableFeatures({
   columnFilteringFeature,
   columnVisibilityFeature,
@@ -86,9 +97,10 @@ const sortableHeader = (title, align = "left") => {
 };
 
 function QuantityBadge({ total }) {
+  const { helping } = useCounts();
   const number = Number(total);
   if (!Number.isFinite(number) || number <= 0) return null;
-  return <Badge>{formatQty(number)}</Badge>;
+  return <Badge className={helping ? "!bg-helping !text-white" : undefined}>{formatQty(number)}</Badge>;
 }
 
 function ProductCell({ product }) {
@@ -162,6 +174,7 @@ function buildColumns(expandedId) {
 
 function CountHistory({ product, employeeId }) {
   const navigate = useNavigate();
+  const { helping } = useCounts();
   const [registers, setRegisters] = React.useState([]);
   const [status, setStatus] = React.useState("loading");
 
@@ -191,11 +204,12 @@ function CountHistory({ product, employeeId }) {
   }, [load]);
 
   return (
-    <div className="border-l-4 border-primary bg-muted/30 px-3 py-3 md:px-4">
+    <div className={`border-l-4 bg-muted/30 px-3 py-3 md:px-4 ${helping ? "border-helping" : "border-primary"}`}>
       <div className="mb-2 flex justify-end">
         <Button
           type="button"
           size="sm"
+          className={helping ? "!bg-helping !text-white hover:!bg-helping/80" : undefined}
           onClick={() => navigate(`/inventory_register?producto=${product.id}`)}
         >
           Ingresar/Borrar registros
@@ -245,7 +259,7 @@ function CountHistory({ product, employeeId }) {
 
 export default function MyRecords() {
   const { user, token } = useAuth();
-  const { employeeId, totals } = useCounts();
+  const { assignedUserId, helping, assignedName, totals } = useCounts();
   const [rows, setRows] = React.useState([]);
   const [status, setStatus] = React.useState("loading");
   const [error, setError] = React.useState("");
@@ -264,7 +278,7 @@ export default function MyRecords() {
       setStatus(token ? "loading" : "ready");
       return;
     }
-    if (!employeeId) {
+    if (!assignedUserId) {
       setRows([]);
       setStatus("ready");
       return;
@@ -273,7 +287,7 @@ export default function MyRecords() {
     let cancelled = false;
     if (!rows.length) setStatus("loading");
     axios
-      .get(`${API_URL}inventory/individuals/id/${employeeId}`)
+      .get(`${API_URL}inventory/individuals/id/${assignedUserId}`)
       .then((response) => {
         if (cancelled) return;
         setRows(
@@ -298,7 +312,7 @@ export default function MyRecords() {
     return () => {
       cancelled = true;
     };
-  }, [user, token, employeeId, totals]);
+  }, [user, token, assignedUserId, totals]);
 
   const visibleRows = React.useMemo(() => {
     const query = search.trim().toLocaleLowerCase("es-MX");
@@ -339,17 +353,24 @@ export default function MyRecords() {
     },
   });
 
-  const emptyMessage = !employeeId
+  const sessionName = capitalize(user?.username);
+  const assignedGivenName = firstWord(assignedName);
+
+  const emptyMessage = !assignedUserId
     ? "Tu cuenta no está ligada a un empleado, así que no tiene registros."
     : search.trim()
       ? "No se encontraron registros."
-      : "Todavía no tienes conteos registrados.";
+      : helping
+        ? `Todavía no hay conteos de ${assignedName || "esta persona"}.`
+        : "Todavía no tienes conteos registrados.";
 
   return (
     <div className="w-full space-y-4 p-4 sm:space-y-6 sm:p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Mis registros de inventario
+          {helping && sessionName && assignedGivenName
+            ? `${sessionName}, estos son los registros de ${assignedGivenName}`
+            : "Mis registros de inventario"}
         </h1>
         <p className="text-sm text-muted-foreground">
           Tu bitácora. Abre un renglón para ver cada conteo de ese código.
@@ -359,7 +380,7 @@ export default function MyRecords() {
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl border bg-card px-4 py-3">
           <p className="text-xs text-muted-foreground">Códigos contados</p>
-          <p className="text-3xl font-semibold tabular-nums text-primary">{rows.length}</p>
+          <p className={`text-3xl font-semibold tabular-nums ${helping ? "text-helping" : "text-primary"}`}>{rows.length}</p>
         </div>
         <div className="rounded-2xl border bg-card px-4 py-3">
           <p className="text-xs text-muted-foreground">Último conteo</p>
@@ -447,7 +468,7 @@ export default function MyRecords() {
                         <TableCell colSpan={columns.length} className="p-0">
                           <CountHistory
                             product={row.original}
-                            employeeId={employeeId}
+                            employeeId={assignedUserId}
                           />
                         </TableCell>
                       </TableRow>

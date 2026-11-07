@@ -33,6 +33,7 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-helping: var(--helping);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -58,6 +59,7 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.488 0.243 264.376);
   --primary-foreground: oklch(0.97 0.014 254.604);
+  --helping: oklch(0.45 0.12 163);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.97 0 0);
@@ -94,6 +96,7 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.623 0.214 259.815);
   --primary-foreground: oklch(0.97 0.014 254.604);
+  --helping: oklch(0.55 0.13 163);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -131,4 +134,13 @@
   html {
     @apply font-sans;
   }
+}
+
+button[data-helping="true"] {
+  background-color: var(--helping) !important;
+  color: #fff !important;
+}
+
+button[data-helping="true"]:hover {
+  background-color: color-mix(in oklch, var(--helping) 82%, black) !important;
 }

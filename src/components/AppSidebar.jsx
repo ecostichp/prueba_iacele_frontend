@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router";
 
 import { API_URL } from "@/constants/api";
 import { useAuth } from "@/context/auth";
+import { useCounts } from "@/context/counts";
 import { canSeeDatabaseMenu, canSeeManagerMenu } from "@/lib/access";
 
 import logo from "@/assets/brand/Logo2021.png";
@@ -23,7 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
+import { ArrowRightLeftIcon, ListXIcon, LockKeyholeIcon, LockKeyholeOpenIcon, UserGroupIcon, DatabaseIcon, FileChartColumnIcon, Layers2Icon, NotebookPen, Trash2Icon, UsersIcon, UsersRoundCollaborationIcon } from "lucide-react";
 
 const navigation = {
   navMain: [
@@ -68,6 +69,14 @@ const navigation = {
         />
       ),
     },
+    {
+      title: "Todos los equipos",
+      url: "/all_teams",
+      icon: (
+        <UsersRoundCollaborationIcon
+        />
+      ),
+    },
   ],
   managers: [
     {
@@ -87,10 +96,10 @@ const navigation = {
       ),
     },
     {
-      name: "Todos los equipos",
-      url: "#",
+      name: "Asignados y Contadores",
+      url: "/teams",
       icon: (
-        <UsersRoundCollaborationIcon
+        <ArrowRightLeftIcon
         />
       ),
     },
@@ -101,6 +110,7 @@ export function AppSidebar({
 }) {
   const { user } = useAuth();
   const { pathname } = useLocation();
+  const { helping, assignedName } = useCounts();
   const [jobTitle, setJobTitle] = useState("");
 
   useEffect(() => {
@@ -149,6 +159,13 @@ export function AppSidebar({
     };
   }, [showDatabase]);
 
+  const assignedLabel = (assignedName || "").trim().split(/\s+/)[0];
+  const inventoryItems = navigation.navMain.map((item) =>
+    item.url === "/" && helping && assignedLabel
+      ? { ...item, title: `Registros de ${assignedLabel}` }
+      : item
+  );
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -166,7 +183,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        <NavSecondary label="Inventario" items={navigation.navMain} />
+        <NavSecondary label="Inventario" items={inventoryItems} />
         <NavSecondary label="Personas" items={navigation.navSecondary} />
         {showManagers && <NavDocuments items={navigation.managers} />}
         {showDatabase && (

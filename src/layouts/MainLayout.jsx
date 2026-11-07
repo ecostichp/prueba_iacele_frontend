@@ -7,6 +7,7 @@ import { Outlet } from "react-router";
 export default function MainLayout() {
 
     return (
+        <CountsProvider>
         <SidebarProvider
             style={{
                 "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -18,12 +19,11 @@ export default function MainLayout() {
                 <SiteHeader />
                 <div className="flex flex-col flex-1">
                     <div className="@container/main flex flex-col flex-1 gap-2">
-                        <CountsProvider>
-                            <Outlet />
-                        </CountsProvider>
+                        <Outlet />
                     </div>
                 </div>
             </SidebarInset>
         </SidebarProvider>
+        </CountsProvider>
     );
 }

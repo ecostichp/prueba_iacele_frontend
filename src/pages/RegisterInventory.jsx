@@ -195,7 +195,7 @@ export default function RegisterInventory() {
   const { products, status, error } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedProductId = searchParams.get("producto");
-  const { totals, lastCounts } = useCounts();
+  const { totals, lastCounts, helping, selfName, assignedName } = useCounts();
   const [onlyCounted, setOnlyCounted] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -261,7 +261,9 @@ export default function RegisterInventory() {
         </h1>
 
         <p className="text-sm text-muted-foreground">
-          Consulta y administra los conteos registrados.
+          {helping && selfName && assignedName
+            ? `${selfName}, estás registrando conteos para ${assignedName}.`
+            : "Consulta y administra los conteos registrados."}
         </p>
       </div>
 

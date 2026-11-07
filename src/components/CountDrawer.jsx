@@ -46,7 +46,7 @@ const errorDetail = (error, fallback) =>
 
 export default function CountDrawer({ item, open: openProp, onOpenChange }) {
   const isMobile = useIsMobile();
-  const { employeeId, teamId, refresh } = useCounts();
+  const { employeeId, assignedUserId, teamId, refresh, helping } = useCounts();
   const [openState, setOpenState] = useState(false);
   const open = openProp ?? openState;
   const setOpen = onOpenChange ?? setOpenState;
@@ -66,7 +66,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
   );
 
   const loadRegisters = async () => {
-    if (!employeeId || !item?.id) {
+    if (!assignedUserId || !item?.id) {
       setRegisters([]);
       return;
     }
@@ -74,7 +74,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${API_URL}inventory/individuals/id/${employeeId}/product/${item.id}`
+        `${API_URL}inventory/individuals/id/${assignedUserId}/product/${item.id}`
       );
       const payload = response.data?.[0];
       const rows = payload?.registers ?? [];
@@ -94,7 +94,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
     if (!open) return;
     setFormError("");
     loadRegisters();
-  }, [open, employeeId, item?.id]);
+  }, [open, assignedUserId, item?.id]);
 
   const saveCount = async (event) => {
     event.preventDefault();
@@ -104,8 +104,8 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
       setFormError("Tu cuenta no está ligada a un empleado.");
       return;
     }
-    if (!teamId) {
-      setFormError("Tu usuario no tiene un equipo asignado.");
+    if (!assignedUserId || !teamId) {
+      setFormError("La persona a la que se acredita el conteo no tiene equipo.");
       return;
     }
     if (!Number.isFinite(count) || count <= 0) {
@@ -120,7 +120,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
         id_products: item.id,
         count_qty: count,
         assigned_team_id: teamId,
-        assigned_user_id: employeeId,
+        assigned_user_id: assignedUserId,
         counting_user_id: employeeId,
         count_type: "individual",
       });
@@ -199,6 +199,7 @@ export default function CountDrawer({ item, open: openProp, onOpenChange }) {
                 type="submit"
                 size="icon-lg"
                 className="size-12 shrink-0 rounded-full"
+                data-helping={helping ? "true" : undefined}
                 disabled={saving || !employeeId}
                 aria-label="Guardar conteo"
               >

@@ -8,6 +8,8 @@ import CloseAccess from "./pages/CloseAccess";
 import AllRecords from "./pages/AllRecords";
 import Metrics from "./pages/Metrics";
 import Coworkers from "./pages/Coworkers";
+import Teams from "./pages/Teams";
+import AllTeams from "./pages/AllTeams";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,14 @@ export const router = createBrowserRouter([
       {
         path: '/coworkers',
         element: <Coworkers />,
+      },
+      {
+        path: '/teams',
+        element: <Teams />,
+      },
+      {
+        path: '/all_teams',
+        element: <AllTeams />,
       },
     ],
   },
