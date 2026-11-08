@@ -18,7 +18,7 @@ function initial(name) {
   return (name || "?").trim().slice(0, 1).toUpperCase();
 }
 
-function countSplits(registers, homeTeam) {
+function countSplits(registers, homeTeam, stage) {
   const counted = new Map();
   const assigned = new Map();
   const unassigned = new Map();
