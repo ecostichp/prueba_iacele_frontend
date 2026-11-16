@@ -145,14 +145,20 @@ export default function CountDrawer({ item, open: openProp, onOpenChange, onChan
         count_type: teamCount ? "diferencias" : (stage || "individual"),
       });
       setQty("");
-      await loadRegisters();
-      await refresh();
-      onChanged?.();
       toast.success("Conteo guardado");
     } catch (error) {
       setFormError(errorDetail(error, "No se pudo guardar el conteo."));
+      return;
     } finally {
       setSaving(false);
+    }
+
+    try {
+      await loadRegisters();
+      await refresh();
+      onChanged?.();
+    } catch (error) {
+      setFormError(errorDetail(error, "El conteo se guardó, pero no se pudo actualizar la lista."));
     }
   };
 
